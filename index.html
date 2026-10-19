@@ -1,1404 +1,756 @@
-<!doctype html><html lang="kk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style><title>Кеңістіктегі бұрыштар</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap">
+<title>Графики механического движения</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=PT+Sans:wght@400;700&family=PT+Serif:ital@0;1&family=PT+Mono&display=swap">
 <style>
-/* Layout: school-notebook sheet on graph paper. Sticky header, pill tabs, one card per topic
-   (text left, rotatable 3D figure right), reference grid, floating pen toolbar over an ink layer. */
+[hidden]{display:none!important}
+/* Layout: школьная тетрадь — красная линия полей, вкладки, слева текст учебника, справа рисунок/модель на клетчатой бумаге */
 :root{
-  --u:1.25; --k:1.15; --ul:1.12;
-  --paper:#f6f8fd; --grid:#dde5f4; --surface:#ffffff; --surface-2:#eef3fc;
-  --ink:#142040; --ink-2:#4b5979; --rule:#ccd6ea;
-  --accent:#2447c5; --accent-ink:#ffffff; --accent-soft:rgba(36,71,197,.12);
-  --margin:#d63e4f;
-  --plane-a:rgba(36,71,197,.17); --edge-a:#2447c5;
-  --plane-b:rgba(214,62,79,.17); --edge-b:#d63e4f;
-  --plane-c:rgba(17,122,85,.17); --edge-c:#117a55;
-  --good:#117a55; --good-soft:rgba(17,122,85,.12); --bad:#c2303f; --bad-soft:rgba(194,48,63,.11);
-  --pen-1:#1b3fd0; --pen-2:#d3263f; --pen-3:#0f8a5f;
-  --font-display:'Source Serif 4','Noto Serif',Georgia,serif;
-  --font-ui:'IBM Plex Sans','Noto Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --paper:#f6f7fb; --surface:#ffffff; --ink:#1c2746; --muted:#5b6582; --line:#d8ddea;
+  --grid:rgba(60,95,170,.09); --accent:#2d4db3; --accent-soft:#e4e9f9; --margin:#d1475a;
+  --ok:#1d8656; --ok-soft:#e1f3ea; --bad:#c13838; --bad-soft:#fbe6e6;
+  --c1:#2d4db3; --c2:#c2410c; --c3:#7c3aed; --c4:#15803d;
+  --f-display:"Alegreya",Georgia,"Times New Roman",serif;
+  --f-body:"PT Sans","Segoe UI",Arial,sans-serif;
+  --f-math:"PT Serif",Georgia,serif;
+  --f-mono:"PT Mono",ui-monospace,Consolas,monospace;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:#0e1526; --grid:#1a2742; --surface:#141d33; --surface-2:#1a2542;
-    --ink:#e8eefc; --ink-2:#a2b2d4; --rule:#2b3b60;
-    --accent:#86a6ff; --accent-ink:#0e1526; --accent-soft:rgba(134,166,255,.17);
-    --margin:#ff8591;
-    --plane-a:rgba(134,166,255,.20); --edge-a:#86a6ff;
-    --plane-b:rgba(255,133,145,.20); --edge-b:#ff8591;
-    --plane-c:rgba(95,211,161,.20); --edge-c:#5fd3a1;
-    --good:#5fd3a1; --good-soft:rgba(95,211,161,.14); --bad:#ff8591; --bad-soft:rgba(255,133,145,.13);
-    --pen-1:#8fb0ff; --pen-2:#ff8a98; --pen-3:#5fd3a1;
-    color-scheme:dark;
-  }
-}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#11162a; --surface:#171e36; --ink:#e5e9f4; --muted:#9aa3bf; --line:#2a3352;
+  --grid:rgba(140,170,255,.07); --accent:#93a9ff; --accent-soft:#222c4c; --margin:#ff7c8b;
+  --ok:#4fc68f; --ok-soft:#173528; --bad:#ff7b7b; --bad-soft:#3a1e24;
+  --c1:#6c84e0; --c2:#d9733c; --c3:#9470dc; --c4:#2fa463; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --paper:#0e1526; --grid:#1a2742; --surface:#141d33; --surface-2:#1a2542;
-  --ink:#e8eefc; --ink-2:#a2b2d4; --rule:#2b3b60;
-  --accent:#86a6ff; --accent-ink:#0e1526; --accent-soft:rgba(134,166,255,.17);
-  --margin:#ff8591;
-  --plane-a:rgba(134,166,255,.20); --edge-a:#86a6ff;
-  --plane-b:rgba(255,133,145,.20); --edge-b:#ff8591;
-  --plane-c:rgba(95,211,161,.20); --edge-c:#5fd3a1;
-  --good:#5fd3a1; --good-soft:rgba(95,211,161,.14); --bad:#ff8591; --bad-soft:rgba(255,133,145,.13);
-  --pen-1:#8fb0ff; --pen-2:#ff8a98; --pen-3:#5fd3a1;
-  color-scheme:dark;
-}
+  --paper:#11162a; --surface:#171e36; --ink:#e5e9f4; --muted:#9aa3bf; --line:#2a3352;
+  --grid:rgba(140,170,255,.07); --accent:#93a9ff; --accent-soft:#222c4c; --margin:#ff7c8b;
+  --ok:#4fc68f; --ok-soft:#173528; --bad:#ff7b7b; --bad-soft:#3a1e24;
+  --c1:#6c84e0; --c2:#d9733c; --c3:#9470dc; --c4:#2fa463; color-scheme:dark}
+:root[data-theme="light"]{color-scheme:light}
 *{box-sizing:border-box}
-body{
-  background-color:var(--paper);
-  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
-  background-size:24px 24px;
-  color:var(--ink); font:400 calc(16px*var(--u))/1.5 var(--font-ui); -webkit-text-size-adjust:100%;
-}
-button,input{font-family:inherit}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.wrap{width:100%;max-width:calc(1080px*var(--u));margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.app{padding-block:0 110px}
-
-/* header */
-.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--paper);border-bottom:1px solid var(--rule)}
-.top-in{flex-wrap:wrap;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px}
-.brand{display:flex;align-items:center;gap:10px;min-width:0}
-.brand svg{flex:none}
-.brand-txt{min-width:0}
-.brand-t{font:600 calc(21px*var(--ul))/1.1 var(--font-display);letter-spacing:-.01em;white-space:nowrap}
-.brand-s{font-size:calc(12.5px*var(--u));color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ctrl{flex-wrap:wrap;display:flex;align-items:center;gap:8px;flex:none}
-.seg{display:inline-flex;border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--surface)}
-.seg button{border:0;background:transparent;color:var(--ink-2);font:600 calc(13px*var(--u)) var(--font-ui);padding:0 11px;min-height:calc(38px*var(--k));cursor:pointer}
-.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
-.icon-btn{width:calc(38px*var(--k));height:calc(38px*var(--k));display:grid;place-items:center;border:1px solid var(--rule);border-radius:10px;background:var(--surface);color:var(--ink);cursor:pointer}
-.icon-btn svg,.tool svg{display:block}
-
-/* tabs */
-.tabs{display:flex;gap:8px;padding-block:14px 4px;overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{flex:none;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);font:600 calc(15px*var(--u)) var(--font-ui);padding:0 16px;min-height:calc(42px*var(--k));border-radius:999px;cursor:pointer;white-space:nowrap}
-.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
-
-/* sheet */
-.sheet{position:relative}
-.stack{display:grid;gap:16px;padding-block:12px 24px}
-.intro{margin:6px 0 0;max-width:64ch;color:var(--ink-2);font-size:calc(15.5px*var(--u))}
-.src-note{margin:0;font-size:calc(12.5px*var(--u));color:var(--ink-2)}
-.legend{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:0 14px}
-.legend summary{cursor:pointer;font-weight:600;min-height:calc(46px*var(--k));display:flex;align-items:center}
-.legend-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px 18px;padding:2px 0 14px;margin:0;list-style:none}
-.legend-g li{display:flex;gap:10px;align-items:baseline;min-width:0}
-.legend-g b{font:italic 600 calc(17px*var(--u)) var(--font-display);white-space:nowrap;min-width:5.4em}
-.legend-g span{font-size:calc(14px*var(--u));color:var(--ink-2)}
-
-.card{background:var(--surface);border:1px solid var(--rule);border-radius:16px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
-@media (min-width:820px){.card{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);padding:24px;gap:30px}}
-.c-text{display:flex;flex-direction:column;gap:14px;min-width:0}
-.c-head{display:flex;align-items:center;gap:10px}
-.tag{flex:none;background:var(--accent);color:var(--accent-ink);font:700 calc(14px*var(--u)) var(--font-ui);letter-spacing:.03em;padding:4px 10px;border-radius:8px;white-space:nowrap}
-.c-head h2{margin:0;font:600 calc(22px*var(--u))/1.2 var(--font-display);text-wrap:balance}
-.stmt{margin:0;font:400 calc(19px*var(--u))/1.5 var(--font-display);max-width:58ch}
-.defs{margin:0;padding-left:1.2em;display:grid;gap:4px;font-size:calc(15px*var(--u));color:var(--ink-2);max-width:60ch}
-.sym{margin:0;background:var(--surface-2);border-radius:10px;padding:10px 12px;font:italic 400 calc(17px*var(--u))/1.5 var(--font-display);overflow-wrap:anywhere}
-.sym small{display:block;font:600 calc(11px*var(--u)) var(--font-ui);font-style:normal;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2);margin-bottom:2px}
-.real{border-top:1px dashed var(--rule);padding-top:12px}
-.real small{font:600 calc(11px*var(--u)) var(--font-ui);letter-spacing:.09em;text-transform:uppercase;color:var(--margin)}
-.real p{margin:2px 0 0;font-size:calc(15px*var(--u));color:var(--ink-2);max-width:58ch}
-.extra{margin:0;border-top:1px dashed var(--rule);padding-top:12px;font-size:calc(15px*var(--u));max-width:60ch}
-.extra b{font-weight:600}
-.proof{border-top:1px dashed var(--rule);padding-top:4px}
-.proof summary{cursor:pointer;font-weight:600;min-height:calc(44px*var(--k));display:flex;align-items:center}
-.proof ol{margin:0;padding-left:1.3em;display:grid;gap:8px;font-size:calc(15.5px*var(--u));max-width:60ch}
-.proof li::marker{font-weight:600;color:var(--ink-2)}
-.ref{display:inline-block;font:700 calc(12px*var(--u)) var(--font-ui);background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:0 6px;margin-left:4px;white-space:nowrap}
-
-/* figure */
-.c-fig{min-width:0}
-.fig{margin:0;background:var(--surface-2);border:1px solid var(--rule);border-radius:12px;overflow:hidden}
-.fig svg{display:block;width:100%;height:auto;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
-.fig svg.grab{cursor:grabbing}
-.fig figcaption{padding:10px 14px;border-top:1px solid var(--rule);font-size:calc(14.5px*var(--u));line-height:1.45;color:var(--ink-2);min-height:5.2em}
-.counts{display:flex;gap:8px;margin-top:10px}
-.count{flex:1;min-width:0;background:var(--surface-2);border:1px solid var(--rule);border-radius:10px;padding:6px 10px;display:flex;align-items:baseline;justify-content:space-between;gap:8px}
-.count span{font-size:calc(12.5px*var(--u));color:var(--ink-2);min-width:0;overflow-wrap:anywhere}
-.count b{font:600 calc(22px*var(--u)) var(--font-display);font-variant-numeric:tabular-nums}
-.modes{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.mode{border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);font:600 calc(13.5px*var(--u)) var(--font-ui);border-radius:999px;padding:0 14px;min-height:calc(38px*var(--k));cursor:pointer}
-.mode[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
-.slider{display:flex;align-items:center;gap:12px;margin-top:10px;font-weight:600;font-size:calc(14px*var(--u))}
-.slider span{white-space:nowrap;min-width:4.2em;font-variant-numeric:tabular-nums}
-.slider input{flex:1;min-width:0;accent-color:var(--accent);min-height:calc(30px*var(--k))}
-.fig-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px;font-size:calc(12.5px*var(--u));color:var(--ink-2)}
-.link-btn{border:0;background:transparent;color:var(--accent);font:600 calc(13px*var(--u)) var(--font-ui);cursor:pointer;min-height:calc(36px*var(--k));padding:0 4px}
-.pl-a{fill:var(--plane-a);stroke:var(--edge-a);stroke-width:1.5;stroke-linejoin:round}
-.pl-b{fill:var(--plane-b);stroke:var(--edge-b);stroke-width:1.5;stroke-linejoin:round}
-.pl-c{fill:var(--plane-c);stroke:var(--edge-c);stroke-width:1.5;stroke-linejoin:round}
-.pl-f{fill:var(--plane-a);stroke:none}
-.ln{fill:none;stroke-linecap:round}
-.ln-ink{stroke:var(--ink)} .ln-accent{stroke:var(--accent)} .ln-faint{stroke:var(--ink-2)}
-.pt{fill:var(--ink);stroke:var(--surface-2);stroke-width:2}
-.lbl{font:italic 600 calc(18px*var(--ul)) var(--font-display);fill:var(--ink);text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:var(--surface-2);stroke-width:3px}
-.lbl-h{fill:var(--ink-2)}
-.lbl-a{fill:var(--edge-a)} .lbl-b{fill:var(--edge-b)} .lbl-c{fill:var(--edge-c)} .lbl-ln{fill:var(--accent)}
-.lbl-pl{font-size:calc(21px*var(--ul))}
-
-/* reference */
-.ref-tools{display:grid;gap:10px}
-.search{width:100%;min-height:calc(46px*var(--k));border:1px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);font:500 calc(16px*var(--u)) var(--font-ui);padding:0 14px}
-.search::placeholder{color:var(--ink-2)}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.rgroup{display:grid;gap:10px}
-.rgroup h3{margin:6px 0 0;font:600 calc(13px*var(--u)) var(--font-ui);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2)}
-.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
-.rc{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
-.rc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.symbtn{border:1px solid var(--rule);background:var(--surface-2);color:var(--ink);border-radius:10px;padding:4px 12px;min-height:calc(44px*var(--k));max-width:100%;font:italic 600 calc(24px*var(--u))/1.2 var(--font-display);cursor:pointer;text-align:left;overflow-wrap:anywhere}
-.symbtn:hover{border-color:var(--accent)}
-.rc-term{font:600 calc(20px*var(--u))/1.25 var(--font-display)}
-.rc-src{flex:none;font:700 calc(12px*var(--u)) var(--font-ui);color:var(--ink-2);background:var(--surface-2);border-radius:6px;padding:2px 7px;white-space:nowrap}
-.rc-txt{margin:0;font-size:calc(15px*var(--u))}
-.rc-ex{margin:0;font:italic calc(15.5px*var(--u)) var(--font-display);color:var(--ink-2);overflow-wrap:anywhere}
-.rc-alt{margin:0;font-size:calc(13.5px*var(--u));color:var(--ink-2)}
-.empty{padding:28px 12px;text-align:center;color:var(--ink-2)}
-
-/* quiz */
-.quiz{max-width:720px;grid-template-columns:minmax(0,1fr)!important;gap:16px}
-.prog{display:flex;gap:4px}
-.prog i{flex:1;height:6px;border-radius:3px;background:var(--rule)}
-.prog i.on{background:var(--accent)}
-.q-n{font-size:calc(13px*var(--u));color:var(--ink-2);font-weight:600}
-.q-t{margin:0;font:600 calc(21px*var(--ul))/1.35 var(--font-display);text-wrap:balance}
-.opts{display:grid;gap:8px}
-.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;padding:12px 14px;border:1px solid var(--rule);border-radius:12px;background:var(--surface);color:var(--ink);font:500 calc(16px*var(--u))/1.4 var(--font-ui);cursor:pointer;min-height:calc(50px*var(--k))}
-.opt .k{flex:none;width:24px;height:24px;border-radius:50%;border:1px solid var(--rule);display:grid;place-items:center;font-size:calc(12px*var(--u));font-weight:700;color:var(--ink-2)}
-.opt.ok{border-color:var(--good);background:var(--good-soft)}
-.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
-.opt[disabled]{cursor:default}
-.fb{margin:0;padding:12px 14px;border-radius:12px;background:var(--surface-2);font-size:calc(15px*var(--u))}
-.fb b.ok{color:var(--good)} .fb b.bad{color:var(--bad)}
-.btn{align-self:flex-start;border:0;background:var(--accent);color:var(--accent-ink);font:600 calc(15px*var(--u)) var(--font-ui);padding:0 20px;min-height:calc(46px*var(--k));border-radius:12px;cursor:pointer}
-.score{font:600 calc(40px*var(--u))/1 var(--font-display)}
-
-/* pen */
-#ink{position:absolute;left:0;top:0;z-index:5;pointer-events:none}
-body[data-tool="pen"] #ink,body[data-tool="eraser"] #ink{pointer-events:auto;touch-action:none;cursor:crosshair}
-body[data-tool="eraser"] #ink{cursor:cell}
-.pen{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:center;pointer-events:none;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
-.pen-bar{pointer-events:auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:4px;padding:6px;background:var(--surface);border:1px solid var(--rule);border-radius:16px;box-shadow:0 8px 28px rgba(8,16,40,.22)}
-.tool{width:calc(38px*var(--k));height:calc(38px*var(--k));display:grid;place-items:center;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--ink);cursor:pointer;padding:0}
-.tool[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
-.tool.armed{background:var(--bad);color:#fff}
-.tool .dot{display:block;border-radius:50%;background:currentColor}
-.tool.sw .dot{width:20px;height:20px}
-.tool.sw[aria-pressed="true"]{background:transparent;border-color:var(--ink)}
-.sep{width:1px;height:24px;background:var(--rule);margin:0 3px}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:45;max-width:min(92vw,420px);background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:12px;font-size:calc(14px*var(--u));line-height:1.35;text-align:center;pointer-events:none}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
-
-.ang-f{fill:var(--plane-b);stroke:none}
-.ang-s{fill:none;stroke:var(--edge-b);stroke-width:1.9;stroke-linejoin:round;stroke-linecap:round}
-.ln-b{stroke:var(--edge-b)} .ln-c{stroke:var(--edge-c)}
-.lbl-ang{font-size:calc(17px*var(--ul))}
-.c-head h2,.c-text,.stmt,.defs li,.sym{min-width:0;overflow-wrap:break-word;hyphens:auto}
+html{font-size:137.5%}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:1rem;line-height:1.55;transition:background .2s,color .2s}
+.wrap{max-width:min(78rem,100%);margin:0 auto;padding-inline:16px;padding-block:0 48px}
+header.top{position:relative;padding-block:28px 20px;padding-left:22px;display:flex;flex-wrap:wrap;gap:16px 24px;justify-content:space-between;align-items:flex-start}
+header.top::before{content:"";position:absolute;left:0;top:24px;bottom:16px;width:2px;background:var(--margin)}
+.htext{flex:1 1 520px;min-width:0}
+.ctrls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sw{display:inline-flex;border:1px solid var(--line);border-radius:999px;background:var(--surface);padding:3px;gap:2px}
+.sw button{font:inherit;font-size:.85rem;font-weight:700;letter-spacing:.04em;border:0;background:none;color:var(--muted);border-radius:999px;padding:5px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.sw button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.sw svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(2rem,4.6vw,3rem);line-height:1.08;margin:.25em 0 .2em;text-wrap:balance}
+h1 em{font-style:italic;font-weight:500;color:var(--accent)}
+.lead{max-width:64ch;color:var(--muted);margin:0}
+h2{font-family:var(--f-display);font-size:1.5rem;margin:0;text-wrap:balance}
+h3{font-family:var(--f-display);font-size:1.2rem;margin:0}
+p{margin:0}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line);display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-bottom:22px}
+nav.tabs button{font:inherit;font-weight:700;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:12px 14px 10px;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav.tabs button:hover{color:var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.m{font-family:var(--f-math);white-space:nowrap}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.82em;line-height:1.12;margin:0 .08em}
+.fr>span:first-child{border-bottom:1px solid currentColor;padding:0 .18em}
+.fr>span:last-child{padding:0 .18em}
+.paper-grid{background-color:var(--surface);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:20px 20px;border:1px solid var(--line);border-radius:10px}
+svg.plot{display:block;width:100%;height:auto}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+.duo.wideR{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}
+@media (max-width:980px){.duo,.duo.wideR{grid-template-columns:1fr}}
+.stack{display:flex;flex-direction:column;gap:18px}
+.defn{border:1.5px solid var(--ink);border-radius:14px;padding:10px 14px;line-height:1.6}
+.fblock{display:block;text-align:center;font-family:var(--f-math);font-size:1.18em;margin-top:6px}
+.note{background:var(--accent-soft);border-radius:8px;padding:10px 14px;line-height:1.6}
+.ex{border-left:3px solid var(--margin);padding-left:12px;line-height:1.7}
+.ex .lbl{display:block;margin-bottom:2px}
+ul.clean{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px;line-height:1.55}
+.lbl{font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-family:var(--f-math);font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+thead th{color:var(--muted);font-weight:400}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button,.chip{font:inherit;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 13px;cursor:pointer;line-height:1.4}
+.seg button[aria-pressed="true"],.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip{font-family:var(--f-math);font-size:.95rem}
+.row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.btn{font:inherit;font-weight:700;background:var(--accent);color:var(--paper);border:0;border-radius:8px;padding:8px 16px;cursor:pointer}
+.btn.ghost{background:none;color:var(--accent);border:1.5px solid var(--accent)}
+.btn.sm{padding:5px 12px;font-size:.9rem}
+select,input.num{font:inherit;font-family:var(--f-math);padding:4px 8px;border:1.5px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);max-width:100%}
+input.num{width:6em}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.sl{display:grid;grid-template-columns:minmax(4em,auto) 1fr 5.5em;gap:10px;align-items:center}
+.sl .vl{font-family:var(--f-math);text-align:right}
+.big{font-family:var(--f-math);font-size:1.35rem;line-height:1.7}
+.eq{font-family:var(--f-math);font-size:1.6rem;line-height:1.6}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:st}
+.steps li{display:grid;grid-template-columns:2em 1fr;gap:10px;align-items:start;counter-increment:st}
+.steps li::before{content:counter(st);font-family:var(--f-mono);font-size:.85rem;color:var(--paper);background:var(--accent);border-radius:50%;width:1.7em;height:1.7em;display:grid;place-items:center;margin-top:.2em}
+.steps .why{color:var(--muted);font-size:.92rem;display:block}
+.steps .mx{font-family:var(--f-math);font-size:1.2rem;line-height:1.9;overflow-x:auto;display:block}
+.sMode{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.9rem;margin:6px 0 12px;cursor:pointer}
+.sMode input{width:1.2em;height:1.2em;accent-color:var(--accent)}
+.work{border:2px dashed var(--line);border-radius:12px;min-height:220px;padding:12px 16px;color:var(--muted);font-size:.95rem;margin-bottom:14px}
+#sCheck .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 6px}
+#sCheck .fb{font-weight:700;margin:6px 0 12px}
+#sCheck .fb.ok{color:var(--ok)}#sCheck .fb.bad{color:var(--bad)}
+#sCtl .btn[disabled]{opacity:.4;cursor:default}
+@media (max-width:700px){#sCheck .opts{grid-template-columns:1fr}}
+.answer{border:2px solid var(--ok);background:var(--ok-soft);border-radius:10px;padding:10px 14px;font-family:var(--f-math);font-size:1.3rem;line-height:1.8}
+.answer.none{border-color:var(--bad);background:var(--bad-soft)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.9rem;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px}
+.qwrap{max-width:880px}
+.stat{font-family:var(--f-mono);font-size:.9rem;color:var(--muted)}
+.stat b{color:var(--ink);font-weight:400}
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:16px}
+.qcat{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.qtext{font-size:1.2rem;line-height:1.6}
+.qtext .m{font-size:1.12em}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:10px}
+.opt{font:inherit;font-family:var(--f-math);font-size:1.08rem;text-align:left;padding:12px 14px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);cursor:pointer;display:flex;gap:10px;align-items:center;min-height:2.6em;line-height:1.6}
+.opt .k{font-family:var(--f-mono);font-size:.8rem;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 5px;flex:none}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.expl{border-radius:8px;padding:12px 14px;font-size:1rem;line-height:1.8}
+.expl.ok{background:var(--ok-soft)} .expl.no{background:var(--bad-soft)}
+.expl b{display:block;margin-bottom:2px}
+.progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.progress > i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.score{font-family:var(--f-display);font-size:3rem;line-height:1}
+.review{display:flex;flex-direction:column;gap:12px}
+.review > div{border-left:3px solid var(--bad);padding:4px 0 4px 12px;line-height:1.7;display:flex;flex-direction:column;gap:6px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
-</head><body><div class="app">
+<style>
+.work{min-height:max(560px,62vh)!important;font-size:.85rem!important;border:2px dashed var(--line)}
+
+.sim{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:980px){.sim{grid-template-columns:1fr}}
+canvas.vessel{display:block;width:100%;height:auto;border-radius:10px}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5em,1fr));gap:8px}
+.readout>div{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--paper)}
+.readout .k{display:block;font-size:.8rem;color:var(--muted);font-weight:700}
+.readout .v{font-family:var(--f-math);font-size:1.25rem}
+.status{border-radius:10px;padding:10px 14px;font-weight:700;line-height:1.5}
+.status.sat{background:var(--accent-soft);color:var(--accent)}
+.status.uns{background:var(--ok-soft);color:var(--ok)}
+.status.cond{background:var(--bad-soft);color:var(--bad)}
+.flux{display:grid;grid-template-columns:auto 1fr 4.5em;gap:6px 10px;align-items:center;font-size:.9rem}
+.flux .bar{height:14px;border-radius:7px;background:var(--line);overflow:hidden}
+.flux .bar i{display:block;height:100%;border-radius:7px;transition:width .15s}
+.obs{counter-reset:o;list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.obs li{counter-increment:o;display:grid;grid-template-columns:1.8em 1fr;gap:8px;line-height:1.5}
+.obs li::before{content:counter(o);font-family:var(--f-mono);font-size:.8rem;background:var(--accent-soft);color:var(--accent);border-radius:50%;width:1.6em;height:1.6em;display:grid;place-items:center;margin-top:.1em}
+.cmp td,.cmp th{white-space:normal;text-align:left;font-family:var(--f-body);vertical-align:top;line-height:1.45}
+.cmp th:first-child{color:var(--muted)}
+.pin{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:6px}
+.pin input{width:8em;font-size:1.2rem}
+.fb.ok{color:var(--ok);font-weight:700}.fb.bad{color:var(--bad);font-weight:700}
+.prob{font-size:1.15rem;line-height:1.7}
+.tcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:980px){.tcard{grid-template-columns:1fr}}
+.cap{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-top:4px}
+
+.tcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:980px){.tcard{grid-template-columns:1fr}}
+.mgrid{display:grid;grid-template-columns:minmax(0,1fr) repeat(2,minmax(0,230px));gap:8px;align-items:center}
+.mgrid .h{font-weight:700;color:var(--muted);font-size:.85rem;text-align:center}
+.mgrid .n{font-weight:700}
+.mgrid svg{width:100%;height:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.seg-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--paper)}
+.seg-row .no{font-family:var(--f-mono);font-size:.85rem;color:#fff;border-radius:50%;width:1.8em;height:1.8em;display:grid;place-items:center}
+.seg-row .flds{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.seg-row input.num{width:4.2em}
+.seg-row .x{font:inherit;border:0;background:none;color:var(--muted);cursor:pointer;font-size:1.3rem;padding:2px 8px;border-radius:6px}
+.track{display:block;width:100%;height:auto}
+svg.click{cursor:crosshair;touch-action:manipulation}
+.opt svg{width:min(240px,100%);height:auto;display:block}
+.qtext svg.plot,.prob svg.plot{max-width:640px}
+</style>
+
+<div class="wrap">
   <header class="top">
-    <div class="wrap top-in">
-      <div class="brand">
-        <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
-          <path d="M3 25l9-12h21l-9 12z" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.6" stroke-linejoin="round"/>
-          <path d="M18 3v31" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/>
-          <circle cx="18" cy="19" r="2.6" fill="var(--ink)"/>
-        </svg>
-        <div class="brand-txt"><div class="brand-t" id="bt"></div><div class="brand-s" id="bs"></div></div>
-      </div>
-      <div class="ctrl">
-        <div class="seg" role="group" aria-label="Язык / Тіл">
-          <button type="button" data-lang="ru" aria-pressed="true">РУС</button>
-          <button type="button" data-lang="kk" aria-pressed="false">ҚАЗ</button>
-        </div>
-        <div class="seg" id="sizeSeg" role="group"><button type="button" data-size="0">А</button><button type="button" data-size="1">А+</button><button type="button" data-size="2">А++</button></div>
-        <button type="button" class="icon-btn" id="themeBtn" data-act="theme"></button>
+    <div class="htext">
+      <div class="eyebrow" data-i="eyebrow"></div>
+      <h1 data-i="h1"></h1>
+      <p class="lead" data-i="lead"></p>
+    </div>
+    <div class="ctrls">
+      <div class="sw" id="langSw" role="group" aria-label="Тіл / Язык"><button data-lang="ru">РУС</button><button data-lang="kz">ҚАЗ</button></div>
+      <div class="sw" id="sizeSw" role="group" aria-label="Размер шрифта"><button data-sz="16">A</button><button data-sz="22">A+</button><button data-sz="28">A++</button></div>
+      <div class="sw" id="themeSw" role="group" aria-label="Тема">
+        <button data-th="light"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span data-i="light"></span></button>
+        <button data-th="dark"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><span data-i="dark"></span></button>
       </div>
     </div>
   </header>
-  <div class="wrap"><nav class="tabs" id="tabs" role="tablist"></nav></div>
-  <div class="wrap">
-    <main class="sheet" id="sheet">
-      <div id="view"></div>
-      <canvas id="ink" aria-hidden="true"></canvas>
-    </main>
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="t-theory" data-tab="theory" data-i="tTheory"></button>
+    <button role="tab" id="t-build" data-tab="build" data-i="tBuild"></button>
+    <button role="tab" id="t-draw" data-tab="draw" data-i="tDraw"></button>
+    <button role="tab" id="t-prob" data-tab="prob" data-i="tProb"></button>
+    <button role="tab" id="t-train" data-tab="train" data-i="tTrain"></button>
+    <button role="tab" id="t-test" data-tab="test" data-i="tTest"></button>
+  </nav>
+  <main>
+  <div id="p-theory" class="pane"><div class="stack" id="theoryBox"></div></div>
+
+  <div id="p-build" class="pane" hidden>
+    <div class="card" style="margin-bottom:18px">
+      <span class="lbl" data-i="trackL"></span>
+      <div class="paper-grid"><svg id="cTrack" class="track" viewBox="0 0 1000 150" role="img"></svg></div>
+      <div class="row"><button class="btn" id="cPlay"></button><button class="btn ghost" id="cReset" data-i="reset"></button><span class="big" id="cNow"></span></div>
+    </div>
+    <div class="duo">
+      <div class="stack">
+        <div class="card"><span class="lbl" data-i="presetL"></span><div class="seg" id="cPre"></div></div>
+        <div class="card"><span class="lbl" data-i="segsL"></span><div id="cSegs" class="stack" style="gap:8px"></div>
+          <div class="row"><button class="btn ghost sm" id="cAdd" data-i="addSeg"></button></div>
+          <div class="tbl-wrap"><table id="cTbl"></table></div></div>
+      </div>
+      <div class="stack">
+        <div class="card"><span class="lbl" data-i="stL"></span><div class="paper-grid"><svg id="cST" class="plot" viewBox="0 0 620 340" role="img"></svg></div></div>
+        <div class="card"><span class="lbl" data-i="vtL"></span><div class="paper-grid"><svg id="cVT" class="plot" viewBox="0 0 620 300" role="img"></svg></div><div class="legend" id="cLeg"></div></div>
+      </div>
+    </div>
   </div>
+
+  <div id="p-draw" class="pane" hidden>
+    <div class="card" style="margin-bottom:18px"><div class="row"><span class="lbl" data-i="drawModeL"></span><div class="seg" id="dMode"></div><button class="btn ghost" id="dNew" data-i="dNew"></button></div><p id="dTask" class="prob" style="margin-top:8px"></p></div>
+    <div class="duo wideR">
+      <div class="stack">
+        <div class="card" id="dLeft"></div>
+      </div>
+      <div class="stack">
+        <div class="card"><div class="paper-grid"><svg id="dSvg" class="plot click" viewBox="0 0 680 420" role="img"></svg></div>
+          <div class="row"><button class="btn" id="dCheck" data-i="check"></button><button class="btn ghost" id="dClear" data-i="clear"></button><button class="btn ghost" id="dShow" data-i="showAns"></button></div>
+          <p id="dFb" class="fb"></p></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="p-prob" class="pane" hidden>
+    <div class="duo wideR">
+      <div class="stack">
+        <div class="card">
+          <span class="lbl" data-i="pTypeL"></span>
+          <div class="seg" id="prCat"></div>
+          <div class="row"><button class="btn" id="prNew" data-i="prNew"></button></div>
+          <label class="sMode"><input type="checkbox" class="teach"> <span data-i="sAllL"></span></label>
+        </div>
+        <div class="card"><span class="lbl" data-i="constL"></span><div id="prConst" style="line-height:1.8"></div></div>
+      </div>
+      <div class="stack">
+        <div class="card">
+          <span class="lbl" id="prCatL"></span>
+          <div class="prob" id="prText"></div>
+          <div id="prSolve"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="p-train" class="pane" hidden>
+    <div class="qwrap">
+      <div class="row" style="margin-bottom:14px"><div class="seg" id="trCat"></div></div>
+      <div class="row" style="margin-bottom:14px">
+        <span class="stat"><span data-i="sDone"></span>: <b id="sDone">0</b></span>
+        <span class="stat"><span data-i="sOk"></span>: <b id="sOk">0</b></span>
+        <span class="stat"><span data-i="sStreak"></span>: <b id="sStreak">0</b></span>
+        <span class="stat"><span data-i="sBest"></span>: <b id="sBest">0</b></span>
+      </div>
+      <div id="trBox"></div>
+    </div>
+  </div>
+  <div id="p-test" class="pane" hidden><div class="qwrap" id="testBox"></div></div>
+  </main>
 </div>
-<div class="pen" id="penWrap"></div>
-<div class="toast" id="toast" hidden></div>
 
 <script>
-(function(){
-'use strict';
-var $=function(s,r){return (r||document).querySelector(s)};
-var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
-var LS={
-  get:function(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
-  set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-};
-var D=Math.PI/180, SUB='₁';
+/* ================= база ================= */
+let LANG='ru';
+try{const s=localStorage.getItem('gr7-lang');if(s==='kz'||s==='ru')LANG=s;}catch(e){}
+const L=(ru,kz)=>LANG==='kz'?kz:ru;
+const $=s=>document.querySelector(s);
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+let rnd=Math.random;
+const ri=(a,b)=>a+Math.floor(rnd()*(b-a+1));
+const pick=a=>a[Math.floor(rnd()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const newSeed=()=>Math.floor(Math.random()*2**31);
+function withSeed(seed,fn){const p=rnd;rnd=mulberry(seed);try{return fn();}finally{rnd=p;}}
+const SUP={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+const sup=n=>String(n).split('').map(c=>SUP[c]||c).join('');
+function trimN(x,d){let s=x.toFixed(d);if(s.includes('.'))s=s.replace(/0+$/,'').replace(/\.$/,'');return s;}
+function fmt(x,sig=3){if(!isFinite(x))return'—';if(x===0)return'0';const a=Math.abs(x);
+  if(a>=1e5||a<1e-3){let e=Math.floor(Math.log10(a));let m=x/10**e;if(Math.abs(Math.round(m*100)/100)>=10){m/=10;e++;}return (trimN(m,sig-1).replace('.',',')+'·10'+sup(e)).replace('-','−');}
+  const d=Math.max(0,sig-1-Math.floor(Math.log10(a)));return trimN(x,d).replace('.',',').replace('-','−');}
+const frac=(n,d)=>`<span class="fr"><span>${n}</span><span>${d}</span></span>`;
+const M_=s=>`<span class="m">${s}</span>`;
+const strip=h=>h.replace(/<[^>]+>/g,'|');
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function txt(parent,s,x,y,a){const e=el('text',Object.assign({x,y,'font-size':19,fill:'var(--ink)','font-family':'PT Serif, Georgia, serif'},a||{}),parent);e.textContent=s;return e;}
+function cssv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
 
-/* ---------- UI strings ---------- */
-var T={
-ru:{sizeGroup:'Размер текста',sizeNames:['Обычный текст','Крупный текст','Очень крупный текст'],title:'Углы в пространстве',sub:'Темы 10.3–10.4 · перпендикуляр, наклонная, угол',
- tabs:{ang:'Угол между прямыми',perp:'Перпендикулярность',obl:'Наклонная и проекция',lp:'Угол прямой и плоскости',ref:'Справочник',qz:'Тест'},
- intro:{
-  ang:'Тема 10.3, §9. Угол между пересекающимися и скрещивающимися прямыми. Двигайте ползунок и поворачивайте чертёж мышью или пальцем.',
-  perp:'Тема 10.3, §11. Когда прямая перпендикулярна плоскости, признак перпендикулярности и свойства.',
-  obl:'Тема 10.3, §12 и §15. Перпендикуляр, наклонная, проекция, ортогональная проекция и теорема о трёх перпендикулярах.',
-  lp:'Тема 10.4, §16. Угол между прямой и плоскостью: определение, свойство и вычисление в кубе и пирамиде.',
-  ref:'Обозначения, формулы и термины тем 10.3–10.4. Нажмите на знак, чтобы скопировать его в записи.'},
- notation:'Обозначения',real:'В жизни',proof:'Доказательство',sym:'Запись',more:'Ещё',
- hint:'Потяните фигуру, чтобы повернуть',reset:'Сбросить вид',
- qOf:'Вопрос',of:'из',next:'Дальше',finish:'Завершить',result:'Результат',again:'Пройти ещё раз',ok:'Верно.',bad:'Неверно.',
- r5:'Отлично, темы усвоены.',r3:'Хорошо. Повторите карточки, где были ошибки.',r0:'Вернитесь к карточкам и попробуйте ещё раз.',
- pen:'Ручка',eraser:'Ластик',c1:'Синяя ручка',c2:'Красная ручка',c3:'Зелёная ручка',size:'Толщина линии',undo:'Отменить последний штрих',
- clear:'Стереть все записи',clearArmed:'Нажмите ещё раз, чтобы стереть всё',
- penOn:'Ручка включена: пишите прямо на странице. Чтобы листать, нажмите на ручку ещё раз.',
- eraserOn:'Ластик: проведите по записи.',cleared:'Записи стёрты',
- toLight:'Включить светлую тему',toDark:'Включить тёмную тему',penGroup:'Ручка для записей',
- search:'Найти знак, формулу или термин',all:'Все',empty:'Ничего не найдено',copied:'Скопировано',copyFail:'Не удалось скопировать',
- cntNames:['вершины','рёбра','грани'],cntLetters:['В','Р','Г'],srcNote:'По учебнику В. А. Смирнова, Е. А. Туякова «Геометрия 10», Мектеп, 2019: §9, §11, §12, §15, §16.'},
-kk:{sizeGroup:'Мәтін өлшемі',sizeNames:['Қалыпты мәтін','Ірі мәтін','Өте ірі мәтін'],title:'Кеңістіктегі бұрыштар',sub:'10.3–10.4 тақырыптар · перпендикуляр, көлбеу, бұрыш',
- tabs:{ang:'Түзулер арасындағы бұрыш',perp:'Перпендикулярлық',obl:'Көлбеу және проекция',lp:'Түзу мен жазықтық бұрышы',ref:'Анықтамалық',qz:'Тест'},
- intro:{
-  ang:'10.3 тақырып, §9. Қиылысатын және айқас түзулер арасындағы бұрыш. Жүгірткіні жылжытып, сызбаны тышқанмен немесе саусақпен бұрыңыз.',
-  perp:'10.3 тақырып, §11. Түзу жазықтыққа қашан перпендикуляр болады, перпендикулярлық белгісі және қасиеттері.',
-  obl:'10.3 тақырып, §12 және §15. Перпендикуляр, көлбеу, проекция, ортогональ проекция және үш перпендикуляр туралы теорема.',
-  lp:'10.4 тақырып, §16. Түзу мен жазықтық арасындағы бұрыш: анықтамасы, қасиеті және куб пен пирамидада есептеу.',
-  ref:'10.3–10.4 тақырыптардың белгілері, формулалары және терминдері. Жазбаға көшіру үшін белгіні басыңыз.'},
- notation:'Белгілеулер',real:'Өмірде',proof:'Дәлелдеу',sym:'Жазылуы',more:'Тағы',
- hint:'Бұру үшін фигураны сүйреңіз',reset:'Көріністі қалпына келтіру',
- qOf:'Сұрақ',of:'/',next:'Келесі',finish:'Аяқтау',result:'Нәтиже',again:'Қайта өту',ok:'Дұрыс.',bad:'Бұрыс.',
- r5:'Тамаша, тақырыптар меңгерілді.',r3:'Жақсы. Қателескен карточкаларды қайталаңыз.',r0:'Карточкаларға оралып, қайта байқап көріңіз.',
- pen:'Қалам',eraser:'Өшіргіш',c1:'Көк қалам',c2:'Қызыл қалам',c3:'Жасыл қалам',size:'Сызық қалыңдығы',undo:'Соңғы сызықты болдырмау',
- clear:'Барлық жазбаны өшіру',clearArmed:'Бәрін өшіру үшін қайта басыңыз',
- penOn:'Қалам қосулы: бетке тікелей жазыңыз. Жылжыту үшін қаламды қайта басыңыз.',
- eraserOn:'Өшіргіш: жазудың үстінен жүргізіңіз.',cleared:'Жазбалар өшірілді',
- toLight:'Жарық тақырыпты қосу',toDark:'Қараңғы тақырыпты қосу',penGroup:'Жазба қаламы',
- search:'Белгіні, формуланы немесе терминді іздеу',all:'Барлығы',empty:'Ештеңе табылмады',copied:'Көшірілді',copyFail:'Көшіру мүмкін болмады',
- cntNames:['төбелер','қырлар','жақтар'],cntLetters:['Т','К','Ж'],srcNote:'В. А. Смирнов, Е. А. Тұяқов «Геометрия 10» оқулығы бойынша, Мектеп, 2019: §9, §11, §12, §15, §16.'}
-};
+/* ================= графики ================= */
+function mkPlot(svg,o){const W=o.W,H=o.H,pl=o.pl||64,pr=o.pr||20,pt=o.pt||20,pb=o.pb||46;
+  const X=x=>pl+(x-o.x0)/(o.x1-o.x0)*(W-pl-pr), Y=y=>H-pb-(y-o.y0)/(o.y1-o.y0)*(H-pt-pb);return{X,Y,W,H,pl,pr,pt,pb};}
+function axes(svg,P,o){const{X,Y}=P;
+  o.xt.forEach(v=>{el('line',{x1:X(v),x2:X(v),y1:Y(o.y0),y2:Y(o.y1),stroke:'var(--line)','stroke-width':1},svg);txt(svg,o.xf?o.xf(v):fmt(v),X(v),Y(o.y0)+24,{'text-anchor':'middle','font-size':16,fill:'var(--muted)'});});
+  o.yt.forEach(v=>{el('line',{x1:X(o.x0),x2:X(o.x1),y1:Y(v),y2:Y(v),stroke:'var(--line)','stroke-width':1},svg);txt(svg,o.yf?o.yf(v):fmt(v),X(o.x0)-8,Y(v)+5,{'text-anchor':'end','font-size':16,fill:'var(--muted)'});});
+  el('line',{x1:X(o.x0),x2:X(o.x1)+8,y1:Y(o.y0),y2:Y(o.y0),stroke:'var(--muted)','stroke-width':2},svg);
+  el('line',{x1:X(o.x0),x2:X(o.x0),y1:Y(o.y0),y2:Y(o.y1)-8,stroke:'var(--muted)','stroke-width':2},svg);
+  txt(svg,o.xl,X(o.x1),Y(o.y0)-10,{'text-anchor':'end','font-size':18,'font-style':'italic',fill:'var(--muted)'});
+  txt(svg,o.yl,X(o.x0)+8,Y(o.y1)+6,{'font-size':18,'font-style':'italic',fill:'var(--muted)'});}
+function path(svg,pts,a){if(!pts.length)return;el('path',Object.assign({d:'M'+pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L'),fill:'none','stroke-width':3,'stroke-linejoin':'round'},a),svg);}
 
-var LEGEND=[
- ['a ⊥ b',{ru:'прямые a и b перпендикулярны (угол между ними 90°)',kk:'a және b түзулері перпендикуляр (арасындағы бұрыш 90°)'}],
- ['a ⊥ α',{ru:'прямая a перпендикулярна плоскости α',kk:'a түзуі α жазықтығына перпендикуляр'}],
- ['∠(a, b)',{ru:'угол между прямыми a и b, 0° ≤ φ ≤ 90°',kk:'a және b түзулері арасындағы бұрыш, 0° ≤ φ ≤ 90°'}],
- ['∠(a, α)',{ru:'угол между прямой a и плоскостью α, 0° ≤ φ ≤ 90°',kk:'a түзуі мен α жазықтығы арасындағы бұрыш, 0° ≤ φ ≤ 90°'}],
- ['AH ⊥ α',{ru:'AH — перпендикуляр из точки A на плоскость α, H — его основание',kk:'AH — A нүктесінен α жазықтығына түсірілген перпендикуляр, H — оның табаны'}],
- ['A′',{ru:'ортогональная проекция точки A на плоскость',kk:'A нүктесінің жазықтыққа ортогональ проекциясы'}]
-];
+function svgStr(o,draw){const s=document.createElementNS(NS,'svg');s.setAttribute('viewBox',`0 0 ${o.W} ${o.H}`);s.setAttribute('class','plot');draw(s);return s.outerHTML;}
+const nice=(mx,n=6)=>{const st=[0.1,0.2,0.25,0.5,1,2,5,10,20,25,50,100,200,250,500,1000];return st.find(s=>mx/s<=n)||1000;};
+const ticks=(a,b,s)=>{const r=[];for(let v=a;v<=b+1e-9;v+=s)r.push(Math.round(v*1e6)/1e6);return r;};
+const close=(x,y,tol)=>Math.abs(x-y)<=Math.max(Math.abs(y)*tol,1e-9);
+const parseNum=s=>{s=String(s).replace(/\s/g,'').replace(',','.').replace('−','-');if(s===''||!isFinite(+s))return null;return +s;};
 
-/* ---------- 3D helpers ---------- */
-/* ---------- 3D helpers ---------- */
-function planeAround(th,hx,hs){var s=Math.sin(th),c=Math.cos(th);return [[-hx,-hs*s,-hs*c],[hx,-hs*s,-hs*c],[hx,hs*s,hs*c],[-hx,hs*s,hs*c]];}
-function yShift(pts,dy){return pts.map(function(p){return [p[0],p[1]+dy,p[2]];});}
-function lerp(a,b,t){return [a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];}
-function pl(pts,col,lab,li){return {k:'plane',pts:pts,col:col,lab:lab,li:li};}
-function ln(a,b,o){var r={k:'line',a:a,b:b,c:'ink',w:2,le:'b',lo:[8,-10]};for(var k in o)r[k]=o[k];return r;}
-function pt(p,lab,o){var r={k:'pt',p:p,lab:lab,o:[9,-9]};for(var k in o)r[k]=o[k];return r;}
-var PH=planeAround(0,1.25,.95);
-var LET='ABCDEFGH';
 
-/* polyhedra */
-function ngon(n,r,y,rot){var a=[],k,t;for(k=0;k<n;k++){t=rot+2*Math.PI*k/n;a.push([r*Math.cos(t),y,r*Math.sin(t)]);}return a;}
-function poly(V,F,names){return {k:'poly',V:V,F:F,names:names};}
-function boxPoly(hx,hy,hz,sx,sz){
- var b=[[-hx,-hy,hz],[hx,-hy,hz],[hx,-hy,-hz],[-hx,-hy,-hz]],
-     t=b.map(function(q){return [q[0]+sx,hy,q[2]+sz];});
- return poly(b.concat(t),[[0,1,2,3],[4,5,6,7],[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7]],
-  ['A','B','C','D','A'+SUB,'B'+SUB,'C'+SUB,'D'+SUB]);
-}
-function tetraPoly(){
- return poly([[-.75,-.6,.43],[.75,-.6,.43],[0,-.6,-.87],[0,.62,0]],[[0,1,2],[0,1,3],[1,2,3],[2,0,3]],['A','B','C','D']);
-}
-function prismPoly(n,obl){
- var rot=Math.PI*.75,b=ngon(n,.85,-.65,rot),t=ngon(n,.85,.65,rot).map(function(q){return obl?[q[0]+.5,q[1],q[2]-.25]:q;}),
-     F=[[],[]],names=[],i,j;
- for(i=0;i<n;i++){F[0].push(i);F[1].push(n+i);names.push(LET[i]);}
- for(i=0;i<n;i++)names.push(LET[i]+SUB);
- for(i=0;i<n;i++){j=(i+1)%n;F.push([i,j,n+j,n+i]);}
- return poly(b.concat(t),F,names);
-}
-function pyramidPoly(n){
- var b=ngon(n,.95,-.6,Math.PI*.75),F=[[]],names=[],i,j;
- for(i=0;i<n;i++){F[0].push(i);names.push(LET[i]);}
- for(i=0;i<n;i++){j=(i+1)%n;F.push([i,j,n]);}
- names.push('S');
- return poly(b.concat([[0,.85,0]]),F,names);
-}
-function polyCounts(p){
- var seen={},e=0;
- p.F.forEach(function(f){for(var i=0;i<f.length;i++){var a=f[i],b=f[(i+1)%f.length],k=a<b?a+'-'+b:b+'-'+a;if(!seen[k]){seen[k]=1;e++;}}});
- return [p.V.length,e,p.F.length];
+const SC4=['var(--c1)','var(--c2)','var(--c4)','var(--c3)'];
+const MS=()=>L('м/с','м/с'), MM=()=>L('м','м'), SS=()=>L('с','с');
+
+/* ================= интерфейс ================= */
+const UI=()=>({
+  eyebrow:L('Физика · 7 класс · Механическое движение','Физика · 7-сынып · Механикалық қозғалыс'),
+  h1:L('Графическое представление <em>механического движения</em>','Механикалық қозғалыстың <em>графиктік</em> бейнеленуі'),
+  lead:L('Графики пути s(t) и скорости v(t) для покоя, равномерного и неравномерного движения: как строить, как читать, как находить скорость и путь по графику — с конструктором движения, заданиями «построй сам», задачами, тренажёром и тестом.','Тыныштық, бірқалыпты және бірқалыпсыз қозғалыс үшін жол s(t) және жылдамдық v(t) графиктері: қалай салу, қалай оқу, график бойынша жылдамдық пен жолды қалай табу — қозғалыс құрастырғышымен, «өзің сал» тапсырмаларымен, есептермен, жаттықтырғышпен және тестпен.'),
+  light:L('Светлая','Ашық'),dark:L('Тёмная','Қараңғы'),
+  tTheory:L('Теория','Теория'),tBuild:L('Конструктор движения','Қозғалыс құрастырғышы'),tDraw:L('Построй график','Графикті сал'),tProb:L('Задачи','Есептер'),tTrain:L('Тренажёр','Жаттықтырғыш'),tTest:L('Тест','Тест'),
+  trackL:L('Движение тела и его графики','Дененің қозғалысы және оның графиктері'),reset:L('Сначала','Басынан'),presetL:L('Готовые примеры','Дайын мысалдар'),segsL:L('Участки движения','Қозғалыс бөліктері'),addSeg:L('+ добавить участок','+ бөлік қосу'),
+  stL:L('График пути s(t)','Жол графигі s(t)'),vtL:L('График скорости v(t)','Жылдамдық графигі v(t)'),
+  drawModeL:L('Задание:','Тапсырма:'),dNew:L('Новое задание','Жаңа тапсырма'),check:L('Проверить','Тексеру'),clear:L('Очистить','Тазалау'),showAns:L('Показать ответ','Жауапты көрсету'),
+  pTypeL:L('Тип задачи','Есеп түрі'),prNew:L('Новая задача','Жаңа есеп'),constL:L('Полезно помнить','Есте сақтаңыз'),
+  sAllL:L('Показывать решение сразу (режим учителя)','Шешімді бірден көрсету (мұғалім режимі)'),
+  sDone:L('Решено','Шешілді'),sOk:L('Верно','Дұрыс'),sStreak:L('Серия','Қатарынан'),sBest:L('Рекорд серии','Ең ұзақ қатар'),
+});
+function applyUI(){const u=UI();document.querySelectorAll('[data-i]').forEach(e=>{const v=u[e.dataset.i];if(v!==undefined)e.innerHTML=v;});
+  document.title=L('Графики механического движения','Механикалық қозғалыс графиктері');
+  document.documentElement.lang=LANG==='kz'?'kk':'ru';[...$('#langSw').children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===LANG));}
+const TABS=['theory','build','draw','prob','train','test'];
+function showTab(t){TABS.forEach(x=>{$('#p-'+x).hidden=x!==t;$('#t-'+x).setAttribute('aria-selected',x===t);});try{localStorage.setItem('gr7-tab',t);}catch(e){}}
+document.querySelector('nav.tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b)showTab(b.dataset.tab);});
+
+/* ================= самопроверка (общий блок) ================= */
+let TEACH=false;try{TEACH=localStorage.getItem('gr7-solveall')==='1';}catch(e){}
+document.addEventListener('change',e=>{if(e.target.classList&&e.target.classList.contains('teach')){TEACH=e.target.checked;try{localStorage.setItem('gr7-solveall',TEACH?'1':'0');}catch(_){}document.querySelectorAll('.teach').forEach(c=>c.checked=TEACH);drawProb();}});
+function solveUI(root,st,P,redraw,work){
+  const N=P.steps.length,n=TEACH?N:Math.min(st.shown,N),ansOn=TEACH||st.ans||n>=N;
+  const solved=st.tries.some(v=>P.abs!=null?Math.abs(v-P.ans)<=P.abs:close(v,P.ans,P.tol||.01));const last=st.tries[st.tries.length-1];
+  root.innerHTML=(work?`<div class="work paper-grid">${L('Место для решения: включите ручку ✎ (справа внизу) и решайте прямо здесь. Затем введите ответ и нажмите «Проверить».','Шешуге арналған орын: қаламды ✎ (оң жақ төменде) қосып, осы жерде шешіңіз. Содан кейін жауапты енгізіп, «Тексеру» батырмасын басыңыз.')}</div>`:'')+
+    (TEACH?'':`<span class="lbl">${L('Ваш ответ','Сіздің жауабыңыз')}</span><div class="pin"><input class="num" inputmode="decimal" placeholder="${P.ph||'?'}" value="${st.raw!==undefined?st.raw:''}" ${solved?'disabled':''}><span class="m">${P.unit}</span><button class="btn go" ${solved?'disabled':''}>${L('Проверить','Тексеру')}</button></div>`+
+    (last===undefined?'':solved?`<p class="fb ok">${L('Верно!','Дұрыс!')} ${st.tries.length===1?L('С первой попытки.','Бірінші әрекеттен.'):''}</p>`:`<p class="fb bad">${(P.trap&&Math.abs(last-P.trap.v)<=(P.abs!=null?P.abs:Math.abs(P.trap.v)*.01))?P.trap.msg:L('Пока неверно. Проверьте вычисления и единицы измерения или откройте подсказку.','Әзірге қате. Есептеулер мен өлшем бірліктерін тексеріңіз немесе кеңесті ашыңыз.')} (${L('попыток','әрекет')}: ${st.tries.length})</p>`))+
+    `<ol class="steps" style="margin-top:12px">${P.steps.slice(0,n).map(s=>`<li><div><span class="why">${s.why}</span><span class="mx">${s.mx}</span></div></li>`).join('')}</ol>`+
+    (ansOn?`<div class="answer" style="margin-top:12px">${L('Ответ','Жауабы')}: ${P.ansH||fmt(P.ans)+' '+P.unit}</div>`:'')+
+    (TEACH?'':`<div class="row" style="margin-top:14px"><button class="btn ghost" data-c="next" ${n>=N?'disabled':''}>${L('Подсказка: следующий шаг','Кеңес: келесі қадам')} (${Math.min(n+1,N)}/${N})</button>${ansOn?'':`<button class="btn ghost" data-c="ans">${L('Показать ответ','Жауапты көрсету')}</button><button class="btn ghost" data-c="all">${L('Всё решение','Толық шешім')}</button>`}</div>`);
+  const inp=root.querySelector('input.num');
+  if(inp){const go=()=>{const v=(P.parse||parseNum)(inp.value);if(v===null)return;st.raw=inp.value;st.tries.push(v);redraw();};root.querySelector('.go').addEventListener('click',go);inp.addEventListener('keydown',e=>{if(e.key==='Enter')go();});}
+  root.querySelectorAll('[data-c]').forEach(b=>b.addEventListener('click',()=>{if(b.disabled)return;const c=b.dataset.c;if(c==='next')st.shown++;else if(c==='ans')st.ans=true;else{st.shown=99;st.ans=true;}redraw();}));
 }
 
-/* ---------- content ---------- */
-var ITEMS={};
-var LIST={ang:['g1','g2','g3'],perp:['p1','p2','p3'],obl:['o1','o2','o3','o4'],lp:['l1','l2','l3','l4']};
-/* ---------- vector helpers and angle marks ---------- */
-function vadd(a,b){return [a[0]+b[0],a[1]+b[1],a[2]+b[2]];}
-function vsub(a,b){return [a[0]-b[0],a[1]-b[1],a[2]-b[2]];}
-function vmul(a,k){return [a[0]*k,a[1]*k,a[2]*k];}
-function vdot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
-function vcross(a,b){return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
-function vlen(a){return Math.sqrt(vdot(a,a));}
-function vunit(a){var l=vlen(a)||1;return vmul(a,1/l);}
-function angDeg(a,b){var c=vdot(a,b)/(vlen(a)*vlen(b));return Math.acos(Math.max(-1,Math.min(1,c)))/D;}
-function fmtN(x,d){return String(+x.toFixed(d)).replace('.',',');}
-function ang(o,u,w,opt){var r={k:'ang',o:o,u:vunit(u),w:vunit(w),r:.3,sq:false,lab:'',col:'b'};for(var k in opt)r[k]=opt[k];return r;}
-function rightAt(o,u,w,r){return ang(o,u,w,{sq:true,r:r||.16});}
-function dashed(a,b,c){return ln(a,b,{c:c||'faint',d:1,w:1.6});}
-var BIG=planeAround(0,1.5,1.15);
 
-/* ================= tab 1: angle between lines (§9) ================= */
-ITEMS.g1={tag:'§9',
- title:{ru:'Угол между пересекающимися прямыми',kk:'Қиылысатын түзулер арасындағы бұрыш'},
- stmt:{ru:'Углом между двумя пересекающимися прямыми называется наименьший из углов, образованных лучами этих прямых с вершиной в точке пересечения. Угол между прямыми не превосходит 90°.',
-       kk:'Қиылысатын екі түзу арасындағы бұрыш деп осы түзулердің қиылысу нүктесінен шығатын сәулелерінен құралған бұрыштардың ең кішісін айтады. Түзулер арасындағы бұрыш 90°-тан аспайды.'},
- defs:{ru:['Две пересекающиеся прямые перпендикулярны, если они образуют прямой угол.','Угол в пространстве — фигура, образованная двумя лучами с общей вершиной и частью плоскости, ограниченной этими лучами.'],
-       kk:['Қиылысатын екі түзу тік бұрыш жасаса, олар перпендикуляр деп аталады.','Кеңістіктегі бұрыш — ортақ төбесі бар екі сәуледен және осы сәулелермен шектелген жазықтық бөлігінен құралған фигура.']},
- sym:{ru:'φ = ∠(a, b),  0° < φ ≤ 90°;  a ⊥ b',kk:'φ = ∠(a, b),  0° < φ ≤ 90°;  a ⊥ b'},
- real:{ru:'Перекрёсток двух дорог: угол между дорогами — меньший из четырёх образованных углов.',kk:'Екі жолдың қиылысы: жолдар арасындағы бұрыш — пайда болған төрт бұрыштың кішісі.'},
- def:'one',
- modes:[{id:'one',ru:'Угол',kk:'Бұрыш',cap:null}],
- slider:{min:5,max:175,def:60,sym:'θ',unit:'°'},
- dyn:function(v,L){
-  var th=v.n,ph=Math.min(th,180-th);
-  if(th===90)return L==='ru'?'Лучи образуют прямой угол: прямые a и b перпендикулярны (a ⊥ b).':'Сәулелер тік бұрыш жасайды: a және b түзулері перпендикуляр (a ⊥ b).';
-  return L==='ru'?('Пересекающиеся прямые образуют углы '+th+'° и '+(180-th)+'°. Угол между прямыми — наименьший из них: '+ph+'°.'):
-   ('Қиылысатын түзулер '+th+'° және '+(180-th)+'° бұрыштар жасайды. Түзулер арасындағы бұрыш — олардың кішісі: '+ph+'°.');
- },
- build:function(m,v){
-  var th=v.n*D,d=[Math.cos(th),0,-Math.sin(th)],ph=Math.min(v.n,180-v.n),O=[0,0,0],
-      u=v.n<=90?[1,0,0]:[-1,0,0];
-  return [pl(BIG,'a','α',2),
-   ln([-1.3,0,0],[1.3,0,0],{c:'accent',w:2.6,lab:'a',le:'b',lo:[0,-14]}),
-   ln(vmul(d,-1.3),vmul(d,1.3),{c:'b',w:2.6,lab:'b',le:'b',lo:[10,-12]}),
-   ang(O,u,d,{r:.42,sq:v.n===90,lab:ph+'°'}),pt(O,'O',{o:[-4,14]})];
- }};
 
-ITEMS.g2={tag:'§9',
- title:{ru:'Угол между скрещивающимися прямыми',kk:'Айқас түзулер арасындағы бұрыш'},
- stmt:{ru:'Пусть a и b скрещиваются. Через произвольную точку C проведём прямые a′ ∥ a и b′ ∥ b. Углом между скрещивающимися прямыми называется угол между пересекающимися прямыми a′ и b′. Он не зависит от выбора точки C.',
-       kk:'a және b түзулері айқас болсын. Кез келген C нүктесі арқылы a′ ∥ a және b′ ∥ b түзулерін жүргіземіз. Айқас түзулер арасындағы бұрыш деп қиылысатын a′ және b′ түзулері арасындағы бұрышты айтады. Ол C нүктесін таңдауға байланысты емес.'},
- defs:{ru:['Свойство 1. Углы с сонаправленными сторонами равны.','Свойство 2. Углы, образованные соответственно параллельными прямыми, равны.'],
-       kk:['1-қасиет. Бағыттас қабырғалары бар бұрыштар тең.','2-қасиет. Сәйкесінше параллель түзулер жасайтын бұрыштар тең.']},
- sym:{ru:'φ = ∠(a, b) = ∠(a, b′),  b′ ∥ b',kk:'φ = ∠(a, b) = ∠(a, b′),  b′ ∥ b'},
- real:{ru:'Эстакада над дорогой: чтобы найти угол между ними, одну прямую мысленно переносят параллельно.',kk:'Жол үстіндегі көпір: олардың арасындағы бұрышты табу үшін бір түзуді ойша өзіне параллель көшіреді.'},
- def:'skew',
- modes:[{id:'skew',ru:'Скрещиваются',kk:'Айқас',cap:null},{id:'shift',ru:'Перенос b′ ∥ b',kk:'b′ ∥ b көшіру',cap:null}],
- slider:{min:10,max:170,def:60,sym:'θ',unit:'°'},
- dyn:function(v,L){
-  var ph=Math.min(v.n,180-v.n);
-  if(v.mode==='skew')return L==='ru'?'Прямые a и b не лежат в одной плоскости и не пересекаются. Как измерить угол между ними?':'a және b түзулері бір жазықтықта жатпайды және қиылыспайды. Олардың арасындағы бұрышты қалай өлшейміз?';
-  return L==='ru'?('Через точку C прямой a проведена b′ ∥ b. Угол между a и b′ равен '+ph+'°. Это и есть угол между a и b'+(ph===90?' (a ⊥ b).':'.')):
-   ('a түзуінің C нүктесі арқылы b′ ∥ b түзуі жүргізілді. a және b′ арасындағы бұрыш '+ph+'°. Бұл a мен b арасындағы бұрыш'+(ph===90?' (a ⊥ b).':'.'));
- },
- build:function(m,v){
-  var th=v.n*D,d=[Math.cos(th),0,-Math.sin(th)],h=.85,C=[.05,0,0],Q=[.05,h,0],
-      o=[pl(BIG,'a','α',2),ln([-1.3,0,0],[1.3,0,0],{c:'accent',w:2.6,lab:'a',le:'b',lo:[0,-14]}),
-         ln(vadd(Q,vmul(d,-1.25)),vadd(Q,vmul(d,1.25)),{c:'b',w:2.6,lab:'b',le:'b',lo:[10,-12]})];
-  if(m==='shift'){
-   var u=v.n<=90?[1,0,0]:[-1,0,0];
-   o.push(dashed(Q,C),
-    ln(vadd(C,vmul(d,-1.25)),vadd(C,vmul(d,1.25)),{c:'b',w:2.2,d:1,lab:'b′',le:'a',lo:[-12,12]}),
-    ang(C,u,d,{r:.4,lab:Math.min(v.n,180-v.n)+'°',sq:v.n===90}),pt(C,'C',{o:[-4,16]}));
-  }
-  return o;
- }};
 
-/* cube helpers (A..D bottom, A1..D1 top) */
-function cubeP(){return boxPoly(.56,.56,.56,0,0);}
-function nmv(P,pair){return P.names[pair[0]]+P.names[pair[1]];}
-function idxOf(P,q){var i;for(i=0;i<P.V.length;i++)if(vlen(vsub(P.V[i],q))<1e-6)return i;return -1;}
-var CUBE_MODES=[
- {id:'m1',a:[0,2],b:[1,6],P:0,tr:true,ru:'AC и BC₁',kk:'AC және BC₁',
-  cap:{ru:'AC и BC₁ скрещиваются. Проведём через A прямую AD₁ ∥ BC₁. Треугольник ACD₁ равносторонний (его стороны — диагонали граней), поэтому угол равен 60°.',
-       kk:'AC және BC₁ түзулері айқас. A нүктесі арқылы BC₁-ге параллель AD₁ түзуін жүргіземіз. ACD₁ үшбұрышы тең қабырғалы (қабырғалары — жақтардың диагональдары), сондықтан бұрыш 60°.'}},
- {id:'m2',a:[0,1],b:[2,6],P:1,tr:true,ru:'AB и CC₁',kk:'AB және CC₁',
-  cap:{ru:'AB и CC₁ скрещиваются. Ребро CC₁ ∥ BB₁, а AB ⊥ BB₁ (грань ABB₁A₁ — квадрат). Угол равен 90°.',
-       kk:'AB және CC₁ айқас. CC₁ қыры BB₁-ге параллель, ал AB ⊥ BB₁ (ABB₁A₁ жағы — квадрат). Бұрыш 90°.'}},
- {id:'m3',a:[0,6],b:[1,7],P:'c',tr:false,ru:'AC₁ и BD₁',kk:'AC₁ және BD₁',
-  cap:{ru:'Диагонали куба AC₁ и BD₁ пересекаются в центре. Для единичного куба cos φ = 1/3, поэтому φ ≈ 70,5°.',
-       kk:'Кубтың AC₁ және BD₁ диагональдары центрде қиылысады. Бірлік куб үшін cos φ = 1/3, сондықтан φ ≈ 70,5°.'}},
- {id:'m4',a:[0,7],b:[3,1],P:7,tr:true,ru:'AD₁ и BD',kk:'AD₁ және BD',
-  cap:{ru:'AD₁ и BD скрещиваются. BD ∥ B₁D₁, поэтому ищем угол AD₁B₁. Треугольник AD₁B₁ равносторонний (диагонали граней), угол равен 60°.',
-       kk:'AD₁ және BD айқас. BD ∥ B₁D₁, сондықтан AD₁B₁ бұрышын іздейміз. AD₁B₁ үшбұрышы тең қабырғалы (жақтардың диагональдары), бұрыш 60°.'}}
-];
-function cubeAngle(m){
- var P=cubeP(),V=P.V,Pt=m.P==='c'?[0,0,0]:V[m.P],a1=V[m.a[0]],a2=V[m.a[1]],b1=V[m.b[0]],b2=V[m.b[1]],
-     av=vsub(a2,a1),bv=vsub(b2,b1),w=vdot(av,bv)<0?vmul(bv,-1):bv,phi=angDeg(av,w),ov;
- ov=[ln(a1,a2,{c:'accent',w:3,lab:nmv(P,m.a),le:'m',lo:[-14,-12]}),ln(b1,b2,{c:'b',w:3,lab:nmv(P,m.b),le:'m',lo:[14,-12]})];
- if(m.tr){
-  var e=vadd(Pt,bv),ie=idxOf(P,e),ip=idxOf(P,Pt);
-  ov.push(ln(Pt,e,{c:'b',w:2.6,d:1,lab:(ie>=0&&ip>=0)?(P.names[ip]+P.names[ie]):'b′',le:'m',lo:[16,12]}));
- }
- ov.push(ang(Pt,av,w,{r:.34,sq:phi>89.99,lab:fmtN(phi,1)+'°'}));
- if(m.P==='c')ov.push(pt(Pt,'O',{o:[10,12]}));
- P.ov=ov;return P;
-}
-ITEMS.g3={tag:'§9',
- title:{ru:'Угол между прямыми в кубе',kk:'Кубтағы түзулер арасындағы бұрыш'},
- stmt:{ru:'Чтобы найти угол между скрещивающимися прямыми, одну из них переносят параллельно так, чтобы она пересекла другую, и ищут угол в треугольнике. Для треугольника со сторонами a, b, c угол C находят по теореме косинусов.',
-       kk:'Айқас түзулер арасындағы бұрышты табу үшін олардың бірін екіншісін қиятындай етіп параллель көшіріп, үшбұрыштан бұрышты іздейді. a, b, c қабырғалы үшбұрыштың C бұрышы косинус теоремасы арқылы табылады.'},
- sym:{ru:'c² = a² + b² − 2ab·cos C,  cos C = (a² + b² − c²) / 2ab',kk:'c² = a² + b² − 2ab·cos C,  cos C = (a² + b² − c²) / 2ab'},
- real:{ru:'Угол между рёбрами коробки или между балками каркаса находят так же, как в кубе.',kk:'Қораптың қырлары немесе қаңқа арқалықтары арасындағы бұрыш кубтағыдай табылады.'},
- def:'m1',v0:{yaw:-.85,pitch:.42},
- modes:CUBE_MODES.map(function(m){return {id:m.id,ru:m.ru,kk:m.kk,cap:m.cap};}),
- poly:function(){return cubeP();},
- build:function(mm){return [cubeAngle(CUBE_MODES.filter(function(x){return x.id===mm;})[0])];}};
 
-/* ================= tab 2: perpendicular line and plane (§11) ================= */
-function rayDir(psi){return [Math.cos(psi*D),0,Math.sin(psi*D)];}
-function planeLines(psis,labs){
- return psis.map(function(p,i){var d=rayDir(p);return ln(vmul(d,-1.2),vmul(d,1.2),{c:'c',w:2.2,lab:labs[i],le:'b',lo:[10,-10]});});
-}
-ITEMS.p1={tag:'§11',
- title:{ru:'Прямая, перпендикулярная плоскости',kk:'Жазықтыққа перпендикуляр түзу'},
- stmt:{ru:'Прямая называется перпендикулярной плоскости, если она перпендикулярна любой прямой, лежащей в этой плоскости. Перпендикулярная прямая пересекает плоскость.',
-       kk:'Егер түзу жазықтықта жатқан кез келген түзуге перпендикуляр болса, ол жазықтыққа перпендикуляр деп аталады. Жазықтыққа перпендикуляр түзу осы жазықтықты қияды.'},
- defs:{ru:['Отрезок называется перпендикулярным плоскости, если он лежит на прямой, перпендикулярной этой плоскости.','Прямая, параллельная плоскости или лежащая в ней, не может быть ей перпендикулярна.'],
-       kk:['Кесінді жазықтыққа перпендикуляр түзуде жатса, ол жазықтыққа перпендикуляр кесінді деп аталады.','Жазықтыққа параллель немесе онда жатқан түзу оған перпендикуляр бола алмайды.']},
- sym:{ru:'a ⊥ α  ⇔  a ⊥ b для любой b ⊂ α',kk:'a ⊥ α  ⇔  кез келген b ⊂ α үшін a ⊥ b'},
- real:{ru:'Вертикальный столб, телебашня, монумент «Қазақ елі» стоят перпендикулярно земле.',kk:'Тік тұрған бағана, телемұнара, «Қазақ елі» монументі жерге перпендикуляр тұр.'},
- def:'perp',
- modes:[
-  {id:'perp',ru:'Перпендикулярна',kk:'Перпендикуляр',cap:{ru:'Прямая a перпендикулярна каждой прямой b₁, b₂, b₃ плоскости α, проходящей через O: a ⊥ α.',kk:'a түзуі α жазықтығындағы O нүктесі арқылы өтетін әрбір b₁, b₂, b₃ түзуіне перпендикуляр: a ⊥ α.'}},
-  {id:'one',ru:'Только одной',kk:'Біреуіне ғана',cap:{ru:'Перпендикулярности одной прямой b₁ мало: a ⊥ b₁, но a наклонена к α и с b₂ образует угол, не равный 90°.',kk:'Бір ғана b₁ түзуіне перпендикулярлық жеткіліксіз: a ⊥ b₁, бірақ a түзуі α-ға көлбеу және b₂-мен 90°-қа тең емес бұрыш жасайды.'}}],
- build:function(m){
-  var O=[0,0,0],o=[pl(BIG,'a','α',2)];
-  if(m==='perp'){
-   o=o.concat(planeLines([0,55,115],['b₁','b₂','b₃']));
-   o.push(ln([0,-.45,0],[0,1.25,0],{c:'accent',w:2.8,lab:'a',le:'b',lo:[12,2]}));
-   [0,55,115].forEach(function(p){o.push(rightAt(O,[0,1,0],rayDir(p),.2));});
-   o.push(pt(O,'O',{o:[-12,14]}));
-   return o;
-  }
-  var t=28*D,dir=[0,Math.cos(t),Math.sin(t)];
-  o=o.concat(planeLines([0,70],['b₁','b₂']));
-  o.push(ln(vmul(dir,-.5),vmul(dir,1.3),{c:'accent',w:2.8,lab:'a',le:'b',lo:[12,2]}),
-   rightAt(O,dir,[1,0,0],.2),ang(O,dir,rayDir(70),{r:.34}),pt(O,'O',{o:[-12,14]}));
-  return o;
- }};
+/* ================= движение из участков ================= */
+// участок: {d: длительность, v0, v1}
+function motion(segs){let t=0,s=0;const out=segs.map(g=>{const o={t0:t,s0:s,...g};o.ds=(g.v0+g.v1)/2*g.d;t+=g.d;s+=o.ds;o.t1=t;o.s1=s;return o;});
+  const T=t,S=s;const at=tt=>{tt=Math.max(0,Math.min(T,tt));for(const o of out){if(tt<=o.t1+1e-9){const u=tt-o.t0,a=(o.v1-o.v0)/o.d;return{s:o.s0+o.v0*u+a*u*u/2,v:o.v0+a*u,seg:o};}}const o=out[out.length-1];return{s:S,v:o.v1,seg:o};};
+  return{segs:out,T,S,at};}
+const SKIND=g=>g.v0===0&&g.v1===0?'rest':g.v0===g.v1?'uni':g.v1>g.v0?'acc':'dec';
+const KN=()=>({rest:L('покой','тыныштық'),uni:L('равномерно','бірқалыпты'),acc:L('разгоняется','үдейді'),dec:L('тормозит','тежеледі')});
+// универсальный график в строку SVG
+function gStr(o,draw){return svgStr({W:o.W||620,H:o.H||340},svg=>{const P=mkPlot(svg,{x0:0,x1:o.x1,y0:0,y1:o.y1,W:o.W||620,H:o.H||340,pl:o.pl||60,pb:o.pb||46});
+  axes(svg,P,{x0:0,x1:o.x1,y0:0,y1:o.y1,xt:o.xt||ticks(0,o.x1,nice(o.x1,10)),yt:o.yt||ticks(0,o.y1,nice(o.y1,8)),xl:o.xl,yl:o.yl,xf:o.noLab?()=>'':null,yf:o.noLab?()=>'':null});draw(svg,P);});}
+function stPts(M,P,t1){const a=[];const N=200;for(let i=0;i<=N;i++){const t=(t1==null?M.T:t1)*i/N;a.push([P.X(t),P.Y(M.at(t).s)]);}return a;}
+function vtPts(M,P,t1){const a=[];const N=200;for(let i=0;i<=N;i++){const t=(t1==null?M.T:t1)*i/N;a.push([P.X(t),P.Y(M.at(t).v)]);}return a;}
+// мини-график (для теории и вариантов ответов)
+function mini(M,which,col,ymax){return gStr({W:240,H:160,x1:M.T,y1:ymax||(which==='s'?Math.max(M.S,1)*1.15:Math.max(...M.segs.map(g=>Math.max(g.v0,g.v1)),1)*1.3),xl:'t',yl:which,noLab:true,pl:26,pb:22,xt:[],yt:[]},(svg,P)=>path(svg,which==='s'?stPts(M,P):vtPts(M,P),{stroke:col||'var(--c1)','stroke-width':4}));}
+const KINDS={rest:[{d:10,v0:0,v1:0}],slow:[{d:10,v0:2,v1:2}],fast:[{d:10,v0:6,v1:6}],acc:[{d:10,v0:0,v1:6}],dec:[{d:10,v0:6,v1:0}],stop:[{d:4,v0:4,v1:4},{d:3,v0:0,v1:0},{d:3,v0:4,v1:4}]};
+const fixS=k=>({rest:[{d:10,v0:0,v1:0,s:20}]})[k];
 
-ITEMS.p2={tag:'§11',
- title:{ru:'Признак перпендикулярности прямой и плоскости',kk:'Түзу мен жазықтықтың перпендикулярлық белгісі'},
- stmt:{ru:'Если прямая перпендикулярна двум пересекающимся прямым плоскости, то она перпендикулярна и самой плоскости.',
-       kk:'Егер түзу жазықтықтағы қиылысатын екі түзуге перпендикуляр болса, онда ол жазықтықтың өзіне де перпендикуляр.'},
- sym:{ru:'a ⊥ b₁, a ⊥ b₂,  b₁ ∩ b₂ = O,  b₁, b₂ ⊂ β  ⇒  a ⊥ β',kk:'a ⊥ b₁, a ⊥ b₂,  b₁ ∩ b₂ = O,  b₁, b₂ ⊂ β  ⇒  a ⊥ β'},
- real:{ru:'Мачта палатки стоит вертикально, если она перпендикулярна двум лежащим на земле верёвкам.',kk:'Шатырдың діңгегі жерде жатқан екі арқанға перпендикуляр болса, тік тұрады.'},
- def:'given',
- modes:[
-  {id:'given',ru:'Дано',kk:'Берілгені',cap:{ru:'Прямая a перпендикулярна двум пересекающимся прямым b₁ и b₂ плоскости β.',kk:'a түзуі β жазықтығындағы қиылысатын b₁ және b₂ түзулеріне перпендикуляр.'}},
-  {id:'res',ru:'Вывод',kk:'Қорытынды',cap:{ru:'Тогда a перпендикулярна и любой другой прямой b плоскости β, то есть a ⊥ β.',kk:'Онда a түзуі β жазықтығындағы кез келген басқа b түзуіне де перпендикуляр, яғни a ⊥ β.'}}],
- proof:[
-  {ru:'Пусть a ⊥ b₁ и a ⊥ b₂, где b₁, b₂ — прямые плоскости β, пересекающиеся в точке O. Возьмём произвольную прямую b ⊂ β и проведём через O прямые a′ ∥ a и b′ ∥ b. Достаточно доказать, что a′ ⊥ b′.',kk:'a ⊥ b₁ және a ⊥ b₂ болсын, мұнда b₁, b₂ — β жазықтығындағы O нүктесінде қиылысатын түзулер. β-дағы кез келген b түзуін алып, O арқылы a′ ∥ a және b′ ∥ b түзулерін жүргіземіз. a′ ⊥ b′ екенін дәлелдеу жеткілікті.'},
-  {ru:'В плоскости β проведём прямую, пересекающую b₁, b₂, b′ в точках B₁, B₂, B. На a′ отложим от O равные отрезки OC и OD по разные стороны от O.',kk:'β жазықтығында b₁, b₂, b′ түзулерін B₁, B₂, B нүктелерінде қиятын түзу жүргіземіз. a′ түзуінде O нүктесінен әртүрлі жаққа тең OC және OD кесінділерін саламыз.'},
-  {ru:'Прямоугольные треугольники OB₁C и OB₁D равны по катетам, значит, B₁C = B₁D. Аналогично B₂C = B₂D.',kk:'OB₁C және OB₁D тікбұрышты үшбұрыштары катеттері бойынша тең, демек B₁C = B₁D. Дәл солай B₂C = B₂D.'},
-  {ru:'Треугольники B₁B₂C и B₁B₂D равны по трём сторонам, поэтому ∠CB₁B = ∠DB₁B.',kk:'B₁B₂C және B₁B₂D үшбұрыштары үш қабырғасы бойынша тең, сондықтан ∠CB₁B = ∠DB₁B.'},
-  {ru:'Тогда треугольники B₁BC и B₁BD равны по двум сторонам и углу между ними, значит, BC = BD.',kk:'Онда B₁BC және B₁BD үшбұрыштары екі қабырғасы мен арасындағы бұрышы бойынша тең, демек BC = BD.'},
-  {ru:'Треугольники OBC и OBD равны по трём сторонам, поэтому ∠BOC = ∠BOD = 90°, то есть a′ ⊥ b′. Значит, a ⊥ b, и прямая a перпендикулярна плоскости β.',kk:'OBC және OBD үшбұрыштары үш қабырғасы бойынша тең, сондықтан ∠BOC = ∠BOD = 90°, яғни a′ ⊥ b′. Демек, a ⊥ b және a түзуі β жазықтығына перпендикуляр.'}],
- build:function(m){
-  var O=[0,0,0],o=[pl(BIG,'a','β',2)].concat(planeLines([0,60],['b₁','b₂']));
-  o.push(ln([0,-.45,0],[0,1.25,0],{c:'accent',w:2.8,lab:'a',le:'b',lo:[12,2]}),
-   rightAt(O,[0,1,0],rayDir(0),.2),rightAt(O,[0,1,0],rayDir(60),.2),pt(O,'O',{o:[-12,14]}));
-  if(m==='res'){
-   var d=rayDir(130);
-   o.push(ln(vmul(d,-1.2),vmul(d,1.2),{c:'b',w:2.4,lab:'b',le:'b',lo:[10,-10]}),rightAt(O,[0,1,0],d,.2));
-  }
-  return o;
- }};
+/* ================= ТЕОРИЯ ================= */
+const fig=(id,vb,cap)=>`<figure style="margin:0"><div class="paper-grid"><svg id="${id}" class="plot" viewBox="${vb}" role="img"></svg></div><div class="cap">${cap}</div></figure>`;
+function miniRest(which){return gStr({W:240,H:160,x1:10,y1:10,xl:'t',yl:which,noLab:true,pl:26,pb:22,xt:[],yt:[]},(svg,P)=>{path(svg,which==='s'?[[P.X(0),P.Y(5)],[P.X(10),P.Y(5)]]:[[P.X(0),P.Y(0.15)],[P.X(10),P.Y(0.15)]],{stroke:'var(--c1)','stroke-width':which==='s'?4:6});if(which==='v')txt(svg,'v = 0',P.X(5),P.Y(2.5),{'text-anchor':'middle','font-size':18,fill:'var(--c1)','font-weight':'bold'});});}
+function renderTheory(){
+  const rows=[['rest',L('Покой (тело стоит)','Тыныштық (дене тұр)'),L('прямая, параллельная оси t','t осіне параллель түзу'),L('v = 0: прямая на оси t','v = 0: t осіндегі түзу')],
+    ['slow',L('Равномерное, медленно','Бірқалыпты, баяу'),L('наклонная прямая из начала координат','координаттар басынан шығатын көлбеу түзу'),L('прямая, параллельная оси t','t осіне параллель түзу')],
+    ['fast',L('Равномерное, быстро','Бірқалыпты, жылдам'),L('прямая круче — скорость больше','түзу тігірек — жылдамдық көбірек'),L('прямая выше','түзу жоғарырақ')],
+    ['acc',L('Неравномерное: скорость растёт','Бірқалыпсыз: жылдамдық артады'),L('кривая, загибается вверх','жоғары иілетін қисық'),L('возрастает','артады')],
+    ['dec',L('Неравномерное: скорость уменьшается','Бірқалыпсыз: жылдамдық кемиді'),L('кривая, становится пологой','біртіндеп жайпақ болатын қисық'),L('убывает','кемиді')],
+    ['stop',L('Движение с остановкой','Аялдамасы бар қозғалыс'),L('на участке остановки — горизонтальный отрезок','аялдама бөлігінде — горизонталь кесінді'),L('на остановке v = 0','аялдамада v = 0')]];
+  $('#theoryBox').innerHTML=`
+  <div class="card"><div class="stack">
+    <h2>${L('1. Зачем нужны графики движения','1. Қозғалыс графиктері не үшін керек')}</h2>
+    <p>${L('Движение тела можно описать словами, формулой, таблицей и <b>графиком</b>. График наглядно показывает, как меняются путь или скорость со временем: по нему сразу видно, двигалось ли тело, быстро или медленно, останавливалось ли.','Дененің қозғалысын сөзбен, формуламен, кестемен және <b>графикпен</b> сипаттауға болады. График жолдың немесе жылдамдықтың уақыт бойынша қалай өзгеретінін көрнекі көрсетеді: одан дененің қозғалғанын, тез немесе баяу жүргенін, тоқтағанын бірден көруге болады.')}</p>
+    <div class="duo"><div class="defn">${L('<b>График пути s(t)</b>: по горизонтальной оси — время t, по вертикальной — пройденный путь s. Путь со временем не уменьшается, поэтому график s(t) никогда не идёт вниз.','<b>Жол графигі s(t)</b>: горизонталь осьте — уақыт t, вертикаль осьте — жүрілген жол s. Жол уақыт өте келе кемімейді, сондықтан s(t) графигі ешқашан төмен түспейді.')}</div>
+      <div class="defn">${L('<b>График скорости v(t)</b>: по горизонтальной оси — время t, по вертикальной — скорость v. Путь численно равен <b>площади</b> фигуры под графиком скорости.','<b>Жылдамдық графигі v(t)</b>: горизонталь осьте — уақыт t, вертикаль осьте — жылдамдық v. Жол жылдамдық графигінің астындағы фигураның <b>ауданына</b> сан жағынан тең.')}</div></div>
+  </div></div>
 
-ITEMS.p3={tag:'§11',
- title:{ru:'Свойства перпендикулярности',kk:'Перпендикулярлық қасиеттері'},
- stmt:{ru:'Свойство 1. Через точку, не принадлежащую плоскости, можно провести единственную прямую, перпендикулярную этой плоскости. Свойство 2. Прямая, параллельная перпендикуляру к плоскости, тоже перпендикулярна этой плоскости. Свойство 3. Две прямые, перпендикулярные одной плоскости, параллельны между собой.',
-       kk:'1-қасиет. Жазықтыққа тиісті емес нүкте арқылы осы жазықтыққа перпендикуляр жалғыз түзу жүргізуге болады. 2-қасиет. Жазықтыққа перпендикуляр түзуге параллель түзу де осы жазықтыққа перпендикуляр. 3-қасиет. Бір жазықтыққа перпендикуляр екі түзу өзара параллель.'},
- sym:{ru:'A ∉ β ⇒ ∃! a ⊥ β;   a₁ ⊥ β, a₂ ∥ a₁ ⇒ a₂ ⊥ β;   a₁ ⊥ β, a₂ ⊥ β ⇒ a₁ ∥ a₂',kk:'A ∉ β ⇒ ∃! a ⊥ β;   a₁ ⊥ β, a₂ ∥ a₁ ⇒ a₂ ⊥ β;   a₁ ⊥ β, a₂ ⊥ β ⇒ a₁ ∥ a₂'},
- real:{ru:'Боковые рёбра прямой призмы перпендикулярны основанию и параллельны друг другу.',kk:'Тік призманың бүйір қырлары табанына перпендикуляр және бір-біріне параллель.'},
- def:'s1',
- modes:[
-  {id:'s1',ru:'Свойство 1',kk:'1-қасиет',cap:{ru:'Из точки A к плоскости β проведён перпендикуляр AH. Другого перпендикуляра из A к β нет.',kk:'A нүктесінен β жазықтығына AH перпендикуляры жүргізілген. A нүктесінен β-ға басқа перпендикуляр жоқ.'}},
-  {id:'s2',ru:'Свойство 2',kk:'2-қасиет',cap:{ru:'a₁ ⊥ β и a₂ ∥ a₁, значит, a₂ тоже перпендикулярна β.',kk:'a₁ ⊥ β және a₂ ∥ a₁, демек a₂ де β-ға перпендикуляр.'}},
-  {id:'s3',ru:'Свойство 3',kk:'3-қасиет',cap:{ru:'a₁ ⊥ β и a₂ ⊥ β, значит, a₁ ∥ a₂. Через них проходит плоскость.',kk:'a₁ ⊥ β және a₂ ⊥ β, демек a₁ ∥ a₂. Олар арқылы жазықтық өтеді.'}}],
- proof:[
-  {ru:'Свойство 3. Пусть a₁ ⊥ β и a₂ ⊥ β. Через точку A₂ прямой a₂ проведём прямую, параллельную a₁.',kk:'3-қасиет. a₁ ⊥ β және a₂ ⊥ β болсын. a₂ түзуінің A₂ нүктесі арқылы a₁-ге параллель түзу жүргіземіз.'},
-  {ru:'По свойству 2 эта прямая перпендикулярна β.',kk:'2-қасиет бойынша бұл түзу β-ға перпендикуляр.'},
-  {ru:'По свойству 1 через A₂ проходит только одна прямая, перпендикулярная β. Значит, проведённая прямая совпадает с a₂.',kk:'1-қасиет бойынша A₂ нүктесі арқылы β-ға перпендикуляр жалғыз түзу өтеді. Демек, жүргізілген түзу a₂-мен беттеседі.'},
-  {ru:'Следовательно, a₂ ∥ a₁.',kk:'Сондықтан a₂ ∥ a₁.'}],
- build:function(m){
-  var o=[pl(BIG,'a','β',2)];
-  if(m==='s1'){
-   var H=[-.1,0,.1],A=[-.1,1.1,.1];
-   o.push(ln(A,H,{c:'accent',w:2.8,lab:'a',le:'a',lo:[12,6]}),ln(H,[.9,0,.1],{c:'faint',w:1.4}),rightAt(H,[0,1,0],[1,0,0],.2),pt(A,'A',{o:[-12,-8]}),pt(H,'H',{o:[-12,12]}));
-   return o;
-  }
-  var H1=[-.45,0,.15],H2=[.55,0,-.2];
-  o.push(ln(vadd(H1,[0,-.35,0]),vadd(H1,[0,1.2,0]),{c:'accent',w:2.8,lab:'a₁',le:'b',lo:[12,2]}),
-   ln(vadd(H2,[0,-.35,0]),vadd(H2,[0,1.2,0]),{c:'b',w:2.8,lab:'a₂',le:'b',lo:[12,2]}),
-   rightAt(H1,[0,1,0],[1,0,0],.2),rightAt(H2,[0,1,0],[1,0,0],.2));
-  if(m==='s3')o.push(pl([vadd(H1,[0,-.0,0]),vadd(H2,[0,0,0]),vadd(H2,[0,1.2,0]),vadd(H1,[0,1.2,0])],'c',null,0));
-  return o;
- }};
+  <div class="card"><div class="stack">
+    <h2>${L('2. Как выглядят графики разных видов движения','2. Әр түрлі қозғалыс түрлерінің графиктері')}</h2>
+    <div class="mgrid"><span></span><span class="h">s(t)</span><span class="h">v(t)</span>
+      ${rows.map(([k,n,a,b])=>`<div><span class="n">${n}</span><br><span style="color:var(--muted);font-size:.85rem">s(t): ${a}<br>v(t): ${b}</span></div><div>${k==='rest'?miniRest('s'):mini(motion(KINDS[k]),'s',null,k==='slow'?60:k==='fast'?66:null)}</div><div>${k==='rest'?miniRest('v'):mini(motion(KINDS[k]),'v',null,k==='slow'||k==='fast'?7.5:null)}</div>`).join('')}</div>
+  </div></div>
 
-/* ================= tab 3: perpendicular, oblique, projection (§12, §15) ================= */
-var KS=.95/3; /* world length per unit, AH = 3 units */
-function dec1(n){return fmtN(n/10,1);}
-ITEMS.o1={tag:'§12, §15',
- title:{ru:'Перпендикуляр, наклонная, проекция',kk:'Перпендикуляр, көлбеу, проекция'},
- stmt:{ru:'Из точки A, не лежащей в плоскости α, проведём перпендикуляр AH. Любой другой отрезок AM, где M ∈ α, называется наклонной, а отрезок HM — проекцией наклонной. Длина перпендикуляра — расстояние от точки до плоскости.',
-       kk:'α жазықтығында жатпайтын A нүктесінен AH перпендикулярын жүргіземіз. α-дағы M нүктесіне баратын басқа AM кесіндісі көлбеу, ал HM кесіндісі көлбеудің проекциясы деп аталады. Перпендикулярдың ұзындығы — нүктеден жазықтыққа дейінгі қашықтық.'},
- defs:{ru:['H — основание перпендикуляра AH.','AH — расстояние от точки A до плоскости α.','AM² = AH² + HM² (теорема Пифагора для треугольника AHM).'],
-       kk:['H — AH перпендикулярының табаны.','AH — A нүктесінен α жазықтығына дейінгі қашықтық.','AM² = AH² + HM² (AHM үшбұрышы үшін Пифагор теоремасы).']},
- sym:{ru:'AH ⊥ α;  AM — наклонная;  HM — проекция;  ρ(A, α) = AH',kk:'AH ⊥ α;  AM — көлбеу;  HM — проекция;  ρ(A, α) = AH'},
- real:{ru:'Лампочка уличного фонаря на высоте 6 м: расстояние до земли измеряют по перпендикуляру.',kk:'Көше шамы 6 м биіктікте: жерге дейінгі қашықтық перпендикуляр бойынша өлшенеді.'},
- def:'one',
- modes:[{id:'one',ru:'Наклонная',kk:'Көлбеу',cap:null}],
- slider:{min:0,max:40,def:20,sym:'HM',unit:'',fmt:dec1},
- dyn:function(v,L){
-  var r=v.n/10,am=Math.sqrt(9+r*r);
-  if(v.n===0)return L==='ru'?'Точка M совпала с H: наклонной нет, AM = AH = 3.':'M нүктесі H-пен беттесті: көлбеу жоқ, AM = AH = 3.';
-  return L==='ru'?('AH = 3, HM = '+fmtN(r,1)+' ⇒ AM² = 9 + '+fmtN(r*r,2)+' = '+fmtN(9+r*r,2)+', AM ≈ '+fmtN(am,2)+'. Наклонная длиннее перпендикуляра.'):
-   ('AH = 3, HM = '+fmtN(r,1)+' ⇒ AM² = 9 + '+fmtN(r*r,2)+' = '+fmtN(9+r*r,2)+', AM ≈ '+fmtN(am,2)+'. Көлбеу перпендикулярдан ұзын.');
- },
- build:function(m,v){
-  var H=[-.5,0,.1],A=vadd(H,[0,.95,0]),r=v.n/10*KS,M=vadd(H,[r,0,0]),o=[pl(BIG,'a','α',2)];
-  o.push(ln(A,H,{c:'accent',w:2.8}),pt(A,'A',{o:[-12,-6]}),pt(H,'H',{o:[-12,12]}));
-  if(v.n>0){
-   o.push(ln(A,M,{c:'b',w:2.8}),ln(H,M,{c:'c',w:2.8}),pt(M,'M',{o:[12,12]}),
-    rightAt(H,[0,1,0],[1,0,0],.17),ang(M,vsub(A,M),vsub(H,M),{r:.3,lab:'φ'}));
-  }
-  return o;
- }};
+  <div class="card tcard"><div class="stack">
+    <h2>${L('3. Как построить график по таблице','3. Кесте бойынша графикті қалай салу')}</h2>
+    <ol class="obs">
+      <li>${L('Начертите две перпендикулярные оси: горизонтальную — время t (с), вертикальную — путь s (м) или скорость v (м/с).','Екі перпендикуляр ось сызыңыз: горизонталь — уақыт t (с), вертикаль — жол s (м) немесе жылдамдық v (м/с).')}</li>
+      <li>${L('Выберите <b>масштаб</b>: сколько секунд и метров приходится на одну клетку, чтобы все данные поместились.','<b>Масштабты</b> таңдаңыз: бір торкөзге қанша секунд пен метр келетінін, барлық деректер сыйатындай етіп.')}</li>
+      <li>${L('Отметьте точки из таблицы: для каждой пары (t; s) найдите t на горизонтальной оси, s — на вертикальной.','Кестедегі нүктелерді белгілеңіз: әр (t; s) жұбы үшін t-ны горизонталь осьтен, s-ті вертикаль осьтен табыңыз.')}</li>
+      <li>${L('Соедините точки. При равномерном движении они лежат на одной прямой.','Нүктелерді қосыңыз. Бірқалыпты қозғалыста олар бір түзудің бойында жатады.')}</li>
+    </ol>
+    <div class="tbl-wrap"><table><thead><tr><th>t, ${SS()}</th>${[0,1,2,3,4,5].map(t=>`<td>${t}</td>`).join('')}</tr></thead><tbody><tr><th>s, ${MM()}</th>${[0,1,2,3,4,5].map(t=>`<td>${t*4}</td>`).join('')}</tr></tbody></table></div>
+  </div>${fig('fT','0 0 520 340',L('Рис. 1. График пути по таблице: v = 4 м/с','1-сурет. Кесте бойынша жол графигі: v = 4 м/с'))}</div>
 
-ITEMS.o2={tag:'§12',
- title:{ru:'Сравнение наклонных',kk:'Көлбеулерді салыстыру'},
- stmt:{ru:'Из одной точки к плоскости проведены перпендикуляр и наклонные. Перпендикуляр короче любой наклонной. Наклонные с равными проекциями равны, и из двух наклонных больше та, у которой больше проекция.',
-       kk:'Бір нүктеден жазықтыққа перпендикуляр және көлбеулер жүргізілген. Перпендикуляр кез келген көлбеуден қысқа. Проекциялары тең көлбеулер тең, ал екі көлбеудің проекциясы үлкені ұзынырақ.'},
- sym:{ru:'AM² = AH² + HM²;   HM₁ = HM₂ ⇔ AM₁ = AM₂;   HM₁ > HM₂ ⇔ AM₁ > AM₂',kk:'AM² = AH² + HM²;   HM₁ = HM₂ ⇔ AM₁ = AM₂;   HM₁ > HM₂ ⇔ AM₁ > AM₂'},
- real:{ru:'Лестница у стены: чем дальше от стены её нижний конец, тем длиннее нужна лестница (задачи 15.4 и 15.5).',kk:'Қабырғаға тіреген саты: төменгі ұшы қабырғадан қаншалықты алыс болса, саты соншалықты ұзын болуы керек (15.4 және 15.5 есептер).'},
- proof:[
-  {ru:'В прямоугольном треугольнике AHM по теореме Пифагора AM² = AH² + HM² для любой наклонной.',kk:'Тікбұрышты AHM үшбұрышында Пифагор теоремасы бойынша кез келген көлбеу үшін AM² = AH² + HM².'},
-  {ru:'Так как HM > 0, то AM > AH: перпендикуляр короче любой наклонной.',kk:'HM > 0 болғандықтан AM > AH: перпендикуляр кез келген көлбеуден қысқа.'},
-  {ru:'Для двух наклонных AH общий, поэтому AM₁ = AM₂ тогда и только тогда, когда HM₁ = HM₂.',kk:'Екі көлбеу үшін AH ортақ, сондықтан AM₁ = AM₂ тек HM₁ = HM₂ болғанда ғана орындалады.'},
-  {ru:'Аналогично AM₁ > AM₂ тогда и только тогда, когда HM₁ > HM₂.',kk:'Дәл солай AM₁ > AM₂ тек HM₁ > HM₂ болғанда ғана орындалады.'}],
- def:'one',
- modes:[{id:'one',ru:'Две наклонные',kk:'Екі көлбеу',cap:null}],
- slider:{min:5,max:40,def:30,sym:'HM₂',unit:'',fmt:dec1},
- dyn:function(v,L){
-  var r2=v.n/10,a1=Math.sqrt(9+4),a2=Math.sqrt(9+r2*r2),rel=v.n>20?'>':(v.n<20?'<':'=');
-  return L==='ru'?('HM₁ = 2, AM₁ ≈ '+fmtN(a1,2)+'.  HM₂ = '+fmtN(r2,1)+', AM₂ ≈ '+fmtN(a2,2)+'.  HM₂ '+rel+' HM₁ ⇒ AM₂ '+rel+' AM₁.'):
-   ('HM₁ = 2, AM₁ ≈ '+fmtN(a1,2)+'.  HM₂ = '+fmtN(r2,1)+', AM₂ ≈ '+fmtN(a2,2)+'.  HM₂ '+rel+' HM₁ ⇒ AM₂ '+rel+' AM₁.');
- },
- build:function(m,v){
-  var H=[-.2,0,0],A=vadd(H,[0,.95,0]),r1=2*KS,r2=v.n/10*KS,d2=[-.5,0,.866],
-      M1=vadd(H,[r1,0,0]),M2=vadd(H,vmul(d2,r2));
-  return [pl(planeAround(0,1.5,1.25),'a','α',2),
-   ln(A,H,{c:'accent',w:2.8}),ln(A,M1,{c:'b',w:2.6}),ln(H,M1,{c:'b',w:2,d:1}),ln(A,M2,{c:'c',w:2.6}),ln(H,M2,{c:'c',w:2,d:1}),
-   rightAt(H,[0,1,0],[1,0,0],.17),pt(A,'A',{o:[-12,-6]}),pt(H,'H',{o:[-12,12]}),pt(M1,'M₁',{o:[14,10]}),pt(M2,'M₂',{o:[-14,12]})];
- }};
+  <div class="card tcard"><div class="stack">
+    <h2>${L('4. Как читать график пути','4. Жол графигін қалай оқу')}</h2>
+    <ul class="clean">
+      <li>${L('Чем <b>круче</b> график, тем <b>больше скорость</b>.','График неғұрлым <b>тік</b> болса, <b>жылдамдық</b> соғұрлым <b>көп</b>.')}</li>
+      <li>${L('Скорость равномерного движения: выберите точку на графике и разделите путь на время:','Бірқалыпты қозғалыс жылдамдығы: графиктен нүкте таңдап, жолды уақытқа бөліңіз:')} <span class="m">v = ${frac('s','t')}</span>.</li>
+      <li>${L('Для участка: <span class="m">v = Δs : Δt</span> — изменение пути делим на время участка.','Бөлік үшін: <span class="m">v = Δs : Δt</span> — жолдың өзгерісін бөлік уақытына бөлеміз.')}</li>
+      <li>${L('Горизонтальный участок — тело <b>стоит</b>.','Горизонталь бөлік — дене <b>тұр</b>.')}</li>
+      <li>${L('Пересечение двух графиков s(t) — в этот момент тела прошли одинаковый путь.','Екі s(t) графигінің қиылысуы — осы сәтте денелер бірдей жол жүрді.')}</li>
+    </ul>
+  </div>${fig('fR','0 0 520 340',L('Рис. 2. Два тела: у тела 1 скорость больше','2-сурет. Екі дене: 1-дененің жылдамдығы көбірек'))}</div>
 
-ITEMS.o3={tag:'§15',
- title:{ru:'Ортогональная проекция',kk:'Ортогональ проекция'},
- stmt:{ru:'Ортогональная проекция точки A на плоскость — основание A′ перпендикуляра AA′. Ортогональное проектирование переводит прямые, не перпендикулярные плоскости, в прямые, а прямые, перпендикулярные плоскости, — в точки. Оно сохраняет отношение отрезков, лежащих на одной прямой.',
-       kk:'A нүктесінің жазықтыққа ортогональ проекциясы — AA′ перпендикулярының A′ табаны. Ортогональ проекциялау жазықтыққа перпендикуляр емес түзулерді түзуге, ал жазықтыққа перпендикуляр түзулерді нүктеге түрлендіреді. Ол бір түзуде жатқан кесінділердің қатынасын сақтайды.'},
- sym:{ru:'AA′ ⊥ π;  c′ — проекция c;  AC : CB = A′C′ : C′B′',kk:'AA′ ⊥ π;  c′ — c-ның проекциясы;  AC : CB = A′C′ : C′B′'},
- real:{ru:'Тень от предмета при вертикальных лучах Солнца — его ортогональная проекция на землю.',kk:'Күн сәулесі тік түскендегі заттың көлеңкесі — оның жерге ортогональ проекциясы.'},
- proof:[
-  {ru:'Свойство 2. Пусть точки A, B, C лежат на прямой c, не перпендикулярной плоскости π, а A′, B′, C′ — их проекции.',kk:'2-қасиет. A, B, C нүктелері π жазықтығына перпендикуляр емес c түзуінде жатсын, ал A′, B′, C′ — олардың проекциялары.'},
-  {ru:'Прямые AA′, BB′, CC′ перпендикулярны π, поэтому параллельны между собой (свойство 3).',kk:'AA′, BB′, CC′ түзулері π-ге перпендикуляр, сондықтан өзара параллель (3-қасиет).'},
-  {ru:'По теореме о пропорциональных отрезках AC : CB = A′C′ : C′B′.',kk:'Пропорционал кесінділер туралы теорема бойынша AC : CB = A′C′ : C′B′.'}],
- def:'line',
- modes:[
-  {id:'line',ru:'Прямая c',kk:'c түзуі',cap:{ru:'Прямая c не перпендикулярна плоскости π, её проекция — прямая c′. Параллельные AA′, CC′, BB′ делят c и c′ в одном отношении.',kk:'c түзуі π жазықтығына перпендикуляр емес, оның проекциясы — c′ түзуі. Параллель AA′, CC′, BB′ түзулері c және c′ түзулерін бірдей қатынаста бөледі.'}},
-  {id:'point',ru:'c ⊥ π',kk:'c ⊥ π',cap:{ru:'Если прямая перпендикулярна плоскости, её ортогональная проекция — точка.',kk:'Түзу жазықтыққа перпендикуляр болса, оның ортогональ проекциясы — нүкте.'}}],
- build:function(m){
-  var o=[pl(BIG,'a','π',2)];
-  if(m==='point'){
-   var B0=[.1,0,.1];
-   o.push(ln(vadd(B0,[0,-.3,0]),vadd(B0,[0,1.25,0]),{c:'accent',w:2.8,lab:'c',le:'b',lo:[12,2]}),
-    pt(vadd(B0,[0,1.0,0]),'A',{o:[-12,-4]}),pt(vadd(B0,[0,.45,0]),'B',{o:[-12,-4]}),pt(B0,'A′ = B′',{o:[-30,14]}),rightAt(B0,[0,1,0],[1,0,0],.17));
-   return o;
-  }
-  var P0=[-.9,.8,-.35],P1=[.9,.1,.45];
-  function at(t){return lerp(P0,P1,t);}
-  function dn(p){return [p[0],0,p[2]];}
-  var A=at(.05),C=at(.42),B=at(.95);
-  o.push(ln(lerp(P0,P1,-.1),lerp(P0,P1,1.1),{c:'accent',w:2.8,lab:'c',le:'a',lo:[-10,-8]}),
-   ln(dn(lerp(P0,P1,-.1)),dn(lerp(P0,P1,1.1)),{c:'c',w:2.6,lab:'c′',le:'b',lo:[14,10]}));
-  [A,C,B].forEach(function(p,i){
-   o.push(dashed(p,dn(p)),pt(p,['A','C','B'][i],{o:[-12,-6]}),pt(dn(p),['A′','C′','B′'][i],{o:[-4,16]}));
-  });
-  return o;
- }};
+  <div class="card tcard"><div class="stack">
+    <h2>${L('5. Как читать график скорости','5. Жылдамдық графигін қалай оқу')}</h2>
+    <ul class="clean">
+      <li>${L('Горизонтальная прямая — движение <b>равномерное</b>; её высота — значение скорости.','Горизонталь түзу — <b>бірқалыпты</b> қозғалыс; оның биіктігі — жылдамдықтың мәні.')}</li>
+      <li>${L('График на оси t (v = 0) — тело стоит.','t осіндегі график (v = 0) — дене тұр.')}</li>
+      <li>${L('Путь равен <b>площади</b> под графиком: для прямоугольника s = v·t.','Жол график астындағы <b>ауданға</b> тең: тіктөртбұрыш үшін s = v·t.')}</li>
+      <li>${L('Если график поднимается — скорость растёт; если опускается — тело тормозит.','Егер график көтерілсе — жылдамдық артады; түссе — дене тежеледі.')}</li>
+    </ul>
+  </div>${fig('fV','0 0 520 300',L('Рис. 3. Путь = площадь под графиком v(t)','3-сурет. Жол = v(t) графигі астындағы аудан'))}</div>`;
+  // рисунки
+  let svg=$('#fT');let P=mkPlot(svg,{x0:0,x1:5.5,y0:0,y1:24,W:520,H:340,pl:56});axes(svg,P,{x0:0,x1:5.5,y0:0,y1:24,xt:ticks(0,5,1),yt:ticks(0,24,4),xl:'t, '+SS(),yl:'s, '+MM()});
+  path(svg,[[P.X(0),P.Y(0)],[P.X(5),P.Y(20)]],{stroke:'var(--c1)'});for(let t=0;t<=5;t++){el('circle',{cx:P.X(t),cy:P.Y(4*t),r:6,fill:'var(--c2)'},svg);}
+  el('line',{x1:P.X(3),x2:P.X(3),y1:P.Y(0),y2:P.Y(12),stroke:'var(--c2)','stroke-dasharray':'4 4'},svg);el('line',{x1:P.X(0),x2:P.X(3),y1:P.Y(12),y2:P.Y(12),stroke:'var(--c2)','stroke-dasharray':'4 4'},svg);
+  svg=$('#fR');P=mkPlot(svg,{x0:0,x1:10,y0:0,y1:60,W:520,H:340,pl:56});axes(svg,P,{x0:0,x1:10,y0:0,y1:60,xt:ticks(0,10,2),yt:ticks(0,60,10),xl:'t, '+SS(),yl:'s, '+MM()});
+  path(svg,[[P.X(0),P.Y(0)],[P.X(10),P.Y(50)]],{stroke:'var(--c1)'});txt(svg,'1',P.X(10)-14,P.Y(50)-8,{'font-size':19,'font-weight':'bold',fill:'var(--c1)'});
+  path(svg,[[P.X(0),P.Y(0)],[P.X(4),P.Y(8)],[P.X(6),P.Y(8)],[P.X(10),P.Y(24)]],{stroke:'var(--c2)'});txt(svg,'2',P.X(10)-14,P.Y(24)-8,{'font-size':19,'font-weight':'bold',fill:'var(--c2)'});
+  txt(svg,L('стоит','тұр'),P.X(5),P.Y(8)+22,{'text-anchor':'middle','font-size':15,fill:'var(--c2)'});
+  svg=$('#fV');P=mkPlot(svg,{x0:0,x1:10,y0:0,y1:8,W:520,H:300,pl:56});axes(svg,P,{x0:0,x1:10,y0:0,y1:8,xt:ticks(0,10,2),yt:ticks(0,8,2),xl:'t, '+SS(),yl:'v, '+MS()});
+  el('rect',{x:P.X(0),y:P.Y(5),width:P.X(6)-P.X(0),height:P.Y(0)-P.Y(5),fill:'var(--c1)','fill-opacity':.2},svg);path(svg,[[P.X(0),P.Y(5)],[P.X(6),P.Y(5)],[P.X(6),P.Y(0)],[P.X(8),P.Y(0)]],{stroke:'var(--c1)'});
+  txt(svg,'s = 5 · 6 = 30 '+MM(),P.X(3),P.Y(2.5),{'text-anchor':'middle','font-size':17,'font-weight':'bold',fill:'var(--c1)'});txt(svg,L('стоит','тұр'),P.X(7),P.Y(0)-10,{'text-anchor':'middle','font-size':15,fill:'var(--muted)'});}
 
-ITEMS.o4={tag:'§15',
- title:{ru:'Теорема о трёх перпендикулярах',kk:'Үш перпендикуляр туралы теорема'},
- stmt:{ru:'Если прямая, лежащая в плоскости, перпендикулярна ортогональной проекции наклонной к этой плоскости, то она перпендикулярна и самой наклонной. Верно и обратное утверждение.',
-       kk:'Жазықтықта жатқан түзу осы жазықтыққа жүргізілген көлбеудің ортогональ проекциясына перпендикуляр болса, онда ол көлбеудің өзіне де перпендикуляр. Кері тұжырым да дұрыс.'},
- sym:{ru:'AA′ ⊥ π;  b ⊂ π;  b ⊥ A′B  ⇒  b ⊥ AB',kk:'AA′ ⊥ π;  b ⊂ π;  b ⊥ A′B  ⇒  b ⊥ AB'},
- extra:{ru:'Пример из учебника: в кубе ABCDA₁B₁C₁D₁ проекция BD₁ на плоскость ABC — это BD, и AC ⊥ BD, значит, AC ⊥ BD₁.',kk:'Оқулықтағы мысал: ABCDA₁B₁C₁D₁ кубында BD₁-дің ABC жазықтығына проекциясы — BD, ал AC ⊥ BD, демек AC ⊥ BD₁.'},
- real:{ru:'Наклонная стойка и её тень на полу: линия на полу, перпендикулярная тени, перпендикулярна и стойке.',kk:'Көлбеу тіреу және оның еденге түскен көлеңкесі: еденде көлеңкеге перпендикуляр сызық тіреуге де перпендикуляр.'},
- proof:[
-  {ru:'Пусть AA′ — перпендикуляр к π, AB — наклонная, A′B — её проекция, прямая b ⊂ π перпендикулярна A′B.',kk:'AA′ — π-ге перпендикуляр, AB — көлбеу, A′B — оның проекциясы, ал π-дегі b түзуі A′B-ға перпендикуляр болсын.'},
-  {ru:'Так как AA′ ⊥ π, то AA′ перпендикулярна любой прямой плоскости, в частности b.',kk:'AA′ ⊥ π болғандықтан, AA′ жазықтықтағы кез келген түзуге, атап айтқанда b-ға перпендикуляр.'},
-  {ru:'Прямая b перпендикулярна двум пересекающимся прямым AA′ и A′B плоскости AA′B, значит, b ⊥ плоскости AA′B.',kk:'b түзуі AA′B жазықтығындағы қиылысатын AA′ және A′B түзулеріне перпендикуляр, демек b ⊥ AA′B жазықтығы.',ref:['p2']},
-  {ru:'Наклонная AB лежит в плоскости AA′B, поэтому b ⊥ AB.',kk:'AB көлбеуі AA′B жазықтығында жатыр, сондықтан b ⊥ AB.'}],
- def:'setup',
- modes:[
-  {id:'setup',ru:'Дано',kk:'Берілгені',cap:{ru:'AA′ ⊥ π, AB — наклонная, A′B — её проекция. В плоскости π через B проходит прямая b.',kk:'AA′ ⊥ π, AB — көлбеу, A′B — оның проекциясы. π жазықтығында B нүктесі арқылы b түзуі өтеді.'}},
-  {id:'given',ru:'b ⊥ A′B',kk:'b ⊥ A′B',cap:{ru:'Пусть b перпендикулярна проекции A′B.',kk:'b түзуі A′B проекциясына перпендикуляр болсын.'}},
-  {id:'res',ru:'b ⊥ AB',kk:'b ⊥ AB',cap:{ru:'Тогда b перпендикулярна и наклонной AB.',kk:'Онда b түзуі AB көлбеуіне де перпендикуляр.'}}],
- build:function(m){
-  var Ap=[-.3,0,.15],A=vadd(Ap,[0,.95,0]),B=[.6,0,.5],pb=vsub(B,Ap),bd=vunit([-pb[2],0,pb[0]]),
-      o=[pl(BIG,'a','π',2),ln(A,Ap,{c:'accent',w:2.6}),ln(A,B,{c:'b',w:2.8}),ln(Ap,B,{c:'c',w:2.8}),
-         pt(A,'A',{o:[-12,-6]}),pt(Ap,'A′',{o:[-14,12]}),pt(B,'B',{o:[14,10]}),rightAt(Ap,[0,1,0],pb,.17)];
-  o.push(ln(vadd(B,vmul(bd,-1.0)),vadd(B,vmul(bd,1.0)),{c:'ink',w:2.4,lab:'b',le:'b',lo:[12,-8]}));
-  if(m==='given')o.push(rightAt(B,bd,vsub(Ap,B),.17));
-  if(m==='res')o.push(rightAt(B,bd,vsub(Ap,B),.17),rightAt(B,bd,vsub(A,B),.24));
-  return o;
- }};
+/* ================= КОНСТРУКТОР ================= */
+const CPRE=()=>({
+  school:{n:L('Дорога в школу','Мектепке жол'),segs:[{d:4,v0:2,v1:2},{d:2,v0:0,v1:0},{d:3,v0:3,v1:3}]},
+  bus:{n:L('Автобус с остановкой','Аялдамасы бар автобус'),segs:[{d:3,v0:0,v1:6},{d:3,v0:6,v1:6},{d:2,v0:6,v1:0},{d:2,v0:0,v1:0}]},
+  bike:{n:L('Велосипедист','Велосипедші'),segs:[{d:5,v0:4,v1:4},{d:5,v0:6,v1:6}]},
+  run:{n:L('Бегун на старте','Мәредегі жүгіруші'),segs:[{d:4,v0:0,v1:8},{d:6,v0:8,v1:8}]}});
+const CB={pre:'school',segs:[],t:0,run:false,last:Date.now()};
+function segRow(g,i){const k=SKIND(g);return `<div class="seg-row" data-i="${i}"><span class="no" style="background:${SC4[i%4]}">${i+1}</span><div class="flds"><label>t <input class="num d" value="${g.d}" inputmode="decimal"> ${SS()}</label><label>v ${L('от','бастап')} <input class="num v0" value="${g.v0}" inputmode="decimal"></label><label>${L('до','дейін')} <input class="num v1" value="${g.v1}" inputmode="decimal"> ${MS()}</label><span class="stat">${KN()[k]}</span></div>${CB.segs.length>1?'<button class="x">×</button>':'<span></span>'}</div>`;}
+function drawBuild(rebuild){const M=motion(CB.segs);
+  $('#cPre').innerHTML=Object.entries(CPRE()).map(([k,p])=>`<button data-p="${k}" aria-pressed="${k===CB.pre}">${p.n}</button>`).join('');
+  if(rebuild!==false)$('#cSegs').innerHTML=CB.segs.map(segRow).join('');
+  $('#cTbl').innerHTML=`<thead><tr><th>№</th><th>${L('движение','қозғалыс')}</th><th>t, ${SS()}</th><th>v, ${MS()}</th><th>s, ${MM()}</th></tr></thead><tbody>`+M.segs.map((o,i)=>{const k=SKIND(o);return `<tr><td style="color:${SC4[i%4]};font-weight:700">${i+1}</td><td style="font-family:var(--f-body)">${KN()[k]}</td><td>${fmt(o.d)}</td><td>${o.v0===o.v1?fmt(o.v0):fmt(o.v0)+' → '+fmt(o.v1)}</td><td>${k==='rest'?'0':k==='uni'?`${fmt(o.v0)} · ${fmt(o.d)} = ${fmt(o.ds)}`:`${frac(fmt(o.v0)+' + '+fmt(o.v1),2)} · ${fmt(o.d)} = ${fmt(o.ds)}`}</td></tr>`;}).join('')+`<tr><td></td><td style="font-family:var(--f-body);font-weight:700">${L('всего','барлығы')}</td><td>${fmt(M.T)}</td><td>v<sub>${L('ср','орт')}</sub> = ${fmt(M.S/M.T,3)}</td><td><b>${fmt(M.S)}</b></td></tr></tbody>`;
+  drawBuildGraphs();}
+function drawBuildGraphs(){const M=motion(CB.segs),t=CB.t,cur=M.at(t);
+  const smax=Math.max(M.S,1)*1.1,vmax=Math.max(1,...M.segs.map(g=>Math.max(g.v0,g.v1)))*1.25;
+  let svg=$('#cST');svg.innerHTML='';let P=mkPlot(svg,{x0:0,x1:M.T,y0:0,y1:smax,W:620,H:340,pl:60});axes(svg,P,{x0:0,x1:M.T,y0:0,y1:smax,xt:ticks(0,M.T,nice(M.T,12)),yt:ticks(0,smax,nice(smax,8)),xl:'t, '+SS(),yl:'s, '+MM()});
+  M.segs.forEach((o,i)=>{const a=[];for(let k=0;k<=40;k++){const tt=o.t0+o.d*k/40;a.push([P.X(tt),P.Y(M.at(tt).s)]);}path(svg,a,{stroke:SC4[i%4],'stroke-opacity':.3});const b=a.filter((p,k)=>o.t0+o.d*k/40<=t+1e-9);if(t>o.t0)b.push([P.X(t),P.Y(cur.s)]);if(b.length>1)path(svg,b,{stroke:SC4[i%4]});});
+  el('line',{x1:P.X(t),x2:P.X(t),y1:P.Y(0),y2:P.Y(smax),stroke:'var(--muted)','stroke-dasharray':'3 4'},svg);el('circle',{cx:P.X(t),cy:P.Y(cur.s),r:7,fill:'var(--ink)'},svg);
+  svg=$('#cVT');svg.innerHTML='';P=mkPlot(svg,{x0:0,x1:M.T,y0:0,y1:vmax,W:620,H:300,pl:60});axes(svg,P,{x0:0,x1:M.T,y0:0,y1:vmax,xt:ticks(0,M.T,nice(M.T,12)),yt:ticks(0,vmax,nice(vmax,6)),xl:'t, '+SS(),yl:'v, '+MS()});
+  M.segs.forEach((o,i)=>{if(o.ds>0){el('polygon',{points:[[o.t0,0],[o.t0,o.v0],[o.t1,o.v1],[o.t1,0]].map(([a,b])=>P.X(a)+','+P.Y(b)).join(' '),fill:SC4[i%4],'fill-opacity':.15},svg);if(P.X(o.t1)-P.X(o.t0)>50)txt(svg,'s'+(i+1)+' = '+fmt(o.ds),(P.X(o.t0)+P.X(o.t1))/2,P.Y(Math.max(o.v0,o.v1)/2)+6,{'text-anchor':'middle','font-size':15,'font-weight':'bold',fill:SC4[i%4]});}
+    path(svg,[[P.X(o.t0),P.Y(o.v0)],[P.X(o.t1),P.Y(o.v1)]],{stroke:SC4[i%4]});});
+  el('line',{x1:P.X(t),x2:P.X(t),y1:P.Y(0),y2:P.Y(vmax),stroke:'var(--muted)','stroke-dasharray':'3 4'},svg);el('circle',{cx:P.X(t),cy:P.Y(cur.v),r:7,fill:'var(--ink)'},svg);
+  $('#cLeg').innerHTML=`<span>${L('Цветные площади под графиком скорости равны путям на участках.','Жылдамдық графигі астындағы түсті аудандар бөліктердегі жолдарға тең.')}</span>`;
+  // трасса
+  svg=$('#cTrack');svg.innerHTML='';const X=s=>60+s/Math.max(M.S,1)*880;
+  el('line',{x1:40,x2:960,y1:110,y2:110,stroke:'var(--muted)','stroke-width':3},svg);
+  M.segs.forEach((o,i)=>{el('line',{x1:X(o.s0),x2:X(o.s1),y1:110,y2:110,stroke:SC4[i%4],'stroke-width':8,'stroke-opacity':.5},svg);});
+  for(let k=0;k<=Math.floor(t+1e-9);k++){el('circle',{cx:X(M.at(k).s),cy:110,r:5,fill:'var(--ink)'},svg);}
+  const g=el('g',{transform:`translate(${X(cur.s)},80)`},svg);el('rect',{x:-40,y:-14,width:44,height:24,rx:6,fill:SC4[M.segs.indexOf(cur.seg)%4]},g);el('circle',{cx:-30,cy:12,r:6,fill:'var(--ink)'},g);el('circle',{cx:-6,cy:12,r:6,fill:'var(--ink)'},g);
+  txt(svg,'0',X(0),138,{'text-anchor':'middle','font-size':14,fill:'var(--muted)'});txt(svg,fmt(M.S)+' '+MM(),X(M.S),138,{'text-anchor':'middle','font-size':14,fill:'var(--muted)'});
+  txt(svg,L('точки — положения через каждую секунду','нүктелер — әр секунд сайынғы орындар'),40,24,{'font-size':14,fill:'var(--muted)','font-family':'PT Sans, Arial'});
+  $('#cNow').innerHTML=`t = ${fmt(Math.round(t*10)/10,2)} ${SS()} &nbsp; s = ${fmt(cur.s,3)} ${MM()} &nbsp; v = ${fmt(cur.v,2)} ${MS()}`;
+  $('#cPlay').textContent=CB.run?L('❚❚ Пауза','❚❚ Үзіліс'):(t>=M.T?L('▶ Ещё раз','▶ Қайта'):L('▶ Пуск','▶ Бастау'));}
+function loadC(k){CB.pre=k;CB.segs=CPRE()[k].segs.map(g=>({...g}));CB.t=0;CB.run=false;drawBuild(true);}
+$('#cPre').addEventListener('click',e=>{const b=e.target.closest('button');if(b)loadC(b.dataset.p);});
+$('#cSegs').addEventListener('change',e=>{const row=e.target.closest('.seg-row');if(!row)return;const g=CB.segs[+row.dataset.i];const v=parseNum(e.target.value);if(v===null||v<0)return;
+  if(e.target.classList.contains('d')){if(v<=0)return;g.d=v;}else if(e.target.classList.contains('v0'))g.v0=v;else g.v1=v;CB.pre=null;CB.t=Math.min(CB.t,motion(CB.segs).T);drawBuild(true);});
+$('#cSegs').addEventListener('click',e=>{const b=e.target.closest('.x');if(!b)return;CB.segs.splice(+b.closest('.seg-row').dataset.i,1);CB.pre=null;CB.t=0;drawBuild(true);});
+$('#cAdd').addEventListener('click',()=>{if(CB.segs.length>=5)return;CB.segs.push({d:3,v0:2,v1:2});CB.pre=null;drawBuild(true);});
+$('#cPlay').addEventListener('click',()=>{const M=motion(CB.segs);if(CB.t>=M.T)CB.t=0;CB.run=!CB.run;CB.last=Date.now();drawBuildGraphs();});
+$('#cReset').addEventListener('click',()=>{CB.t=0;CB.run=false;drawBuildGraphs();});
+setInterval(()=>{if(!CB.run)return;const now=Date.now(),M=motion(CB.segs);CB.t=Math.min(M.T,CB.t+(now-CB.last)/1000);CB.last=now;if(CB.t>=M.T)CB.run=false;if(!$('#p-build').hidden)drawBuildGraphs();},50);
 
-/* ================= tab 4: angle between a line and a plane (§16, topic 10.4) ================= */
-ITEMS.l1={tag:'§16',
- title:{ru:'Угол между прямой и плоскостью',kk:'Түзу мен жазықтық арасындағы бұрыш'},
- stmt:{ru:'Углом между наклонной и плоскостью называется угол между этой наклонной и её ортогональной проекцией на плоскость. Прямая, перпендикулярная плоскости, образует с ней прямой угол. Углом между отрезком и плоскостью называется угол между прямой, содержащей отрезок, и этой плоскостью.',
-       kk:'Көлбеу мен жазықтық арасындағы бұрыш деп осы көлбеу мен оның жазықтыққа ортогональ проекциясы арасындағы бұрышты айтады. Жазықтыққа перпендикуляр түзу онымен тік бұрыш жасайды. Кесінді мен жазықтық арасындағы бұрыш деп кесіндіні қамтитын түзу мен осы жазықтық арасындағы бұрышты айтады.'},
- defs:{ru:['Перпендикулярная прямая образует с плоскостью угол 90°.','Параллельная плоскости прямая образует с ней угол 0°.'],
-       kk:['Перпендикуляр түзу жазықтықпен 90° бұрыш жасайды.','Жазықтыққа параллель түзу онымен 0° бұрыш жасайды.']},
- sym:{ru:'φ = ∠(a, α) = ∠ACA′,  0° ≤ φ ≤ 90°;  sin φ = AA′ : AC',kk:'φ = ∠(a, α) = ∠ACA′,  0° ≤ φ ≤ 90°;  sin φ = AA′ : AC'},
- real:{ru:'Наклон лестницы к земле, склона горы к горизонту, взлёт самолёта.',kk:'Сатының жерге еңкеюі, тау баурайының көкжиекке еңкеюі, ұшақтың көтерілуі.'},
- def:'one',
- modes:[{id:'one',ru:'Угол',kk:'Бұрыш',cap:null}],
- slider:{min:0,max:90,def:40,sym:'φ',unit:'°'},
- dyn:function(v,L){
-  var f=v.n;
-  if(f===0)return L==='ru'?'Прямая параллельна плоскости (или лежит в ней): угол равен 0°.':'Түзу жазықтыққа параллель (немесе онда жатыр): бұрыш 0°.';
-  if(f===90)return L==='ru'?'Прямая перпендикулярна плоскости: угол равен 90°, проекция прямой — точка.':'Түзу жазықтыққа перпендикуляр: бұрыш 90°, түзудің проекциясы — нүкте.';
-  return L==='ru'?('CA — наклонная, CA′ — её проекция, AA′ ⊥ α. Угол ACA′ = '+f+'°, sin φ = AA′ : AC ≈ '+fmtN(Math.sin(f*D),2)+'.'):
-   ('CA — көлбеу, CA′ — оның проекциясы, AA′ ⊥ α. ACA′ бұрышы = '+f+'°, sin φ = AA′ : AC ≈ '+fmtN(Math.sin(f*D),2)+'.');
- },
- build:function(m,v){
-  var f=v.n*D,C=[-.35,0,0],d=[Math.cos(f),Math.sin(f),0],A=vadd(C,vmul(d,1.15)),Ap=[A[0],0,0],o=[pl(BIG,'a','α',2)];
-  if(v.n>0)o.push(ln(vadd(C,vmul(d,-.5)),C,{c:'faint',w:1.8,d:1}));
-  o.push(ln(C,vadd(C,vmul(d,1.3)),{c:'accent',w:2.8,lab:'a',le:'b',lo:[12,-4]}));
-  if(v.n>0&&v.n<90)o.push(ln(C,Ap,{c:'c',w:2.8}),dashed(A,Ap),rightAt(Ap,[0,1,0],[-1,0,0],.17),pt(Ap,'A′',{o:[4,16]}));
-  if(v.n===90)o.push(rightAt(C,d,[1,0,0],.2));
-  else if(v.n>0)o.push(ang(C,d,[1,0,0],{r:.42,lab:'φ'}));
-  o.push(pt(C,'C',{o:[-12,14]}),pt(A,'A',{o:[-12,-6]}));
-  return o;
- }};
-
-ITEMS.l2={tag:'§16',
- title:{ru:'Наименьший из углов',kk:'Бұрыштардың ең кішісі'},
- stmt:{ru:'Угол между наклонной и плоскостью — наименьший из углов, которые эта наклонная образует с прямыми плоскости, проходящими через точку её пересечения с плоскостью.',
-       kk:'Көлбеу мен жазықтық арасындағы бұрыш — осы көлбеудің жазықтықтың оны қиятын нүктесі арқылы өтетін түзулерімен жасайтын бұрыштарының ең кішісі.'},
- sym:{ru:'cos γ = cos φ · cos ψ  ⇒  γ ≥ φ',kk:'cos γ = cos φ · cos ψ  ⇒  γ ≥ φ'},
- extra:{ru:'Формула cos γ = cos φ · cos ψ получается из скалярного произведения единичных векторов (глава III). Здесь φ = 40°, ψ — угол между прямой b и проекцией CA′.',kk:'cos γ = cos φ · cos ψ формуласы бірлік векторлардың скаляр көбейтіндісінен шығады (III тарау). Мұнда φ = 40°, ψ — b түзуі мен CA′ проекциясы арасындағы бұрыш.'},
- real:{ru:'На склоне горы самый крутой путь идёт вдоль линии наибольшего ската, любая другая тропа положе.',kk:'Тау беткейінде ең тік жол ең үлкен еңіс сызығы бойымен өтеді, кез келген басқа соқпақ жатығырақ.'},
- proof:[
-  {ru:'Пусть CA — наклонная, CA′ — проекция, φ = ∠ACA′, а CB — другая прямая плоскости. Возьмём на ней точку B, для которой CB = CA′, B ≠ A′.',kk:'CA — көлбеу, CA′ — проекция, φ = ∠ACA′ болсын, ал CB — жазықтықтағы басқа түзу. Онда CB = CA′, B ≠ A′ болатын B нүктесін аламыз.'},
-  {ru:'AA′ — перпендикуляр, AB — наклонная, поэтому AB > AA′.',kk:'AA′ — перпендикуляр, AB — көлбеу, сондықтан AB > AA′.',ref:['o2']},
-  {ru:'По теореме косинусов в треугольниках ACB и ACA′ при CB = CA′ из AB > AA′ следует cos ∠ACB < cos ∠ACA′.',kk:'CB = CA′ болғанда ACB және ACA′ үшбұрыштарындағы косинус теоремасы бойынша AB > AA′ шартынан cos ∠ACB < cos ∠ACA′ шығады.'},
-  {ru:'Значит, ∠ACB > ∠ACA′: угол с проекцией наименьший.',kk:'Демек, ∠ACB > ∠ACA′: проекциямен жасайтын бұрыш ең кіші.'}],
- def:'one',
- modes:[{id:'one',ru:'Прямая b',kk:'b түзуі',cap:null}],
- slider:{min:0,max:90,def:50,sym:'ψ',unit:'°'},
- dyn:function(v,L){
-  var g=Math.acos(Math.cos(40*D)*Math.cos(v.n*D))/D;
-  return L==='ru'?('φ = 40°, ψ = '+v.n+'° ⇒ cos γ = cos 40° · cos '+v.n+'° ≈ '+fmtN(Math.cos(40*D)*Math.cos(v.n*D),3)+', γ ≈ '+fmtN(g,1)+'°. '+(v.n===0?'При ψ = 0 прямая b — проекция, γ = φ.':'γ больше φ.')):
-   ('φ = 40°, ψ = '+v.n+'° ⇒ cos γ = cos 40° · cos '+v.n+'° ≈ '+fmtN(Math.cos(40*D)*Math.cos(v.n*D),3)+', γ ≈ '+fmtN(g,1)+'°. '+(v.n===0?'ψ = 0 болғанда b түзуі — проекция, γ = φ.':'γ φ-ден үлкен.'));
- },
- build:function(m,v){
-  var f=40*D,C=[-.35,0,0],d=[Math.cos(f),Math.sin(f),0],e=rayDir(v.n),A=vadd(C,vmul(d,1.15)),Ap=[A[0],0,0];
-  return [pl(BIG,'a','α',2),ln(vadd(C,vmul(d,-.4)),C,{c:'faint',w:1.8,d:1}),
-   ln(C,vadd(C,vmul(d,1.3)),{c:'accent',w:2.8,lab:'a',le:'b',lo:[12,-4]}),
-   ln(C,Ap,{c:'c',w:2.2,d:1}),dashed(A,Ap),
-   ln(vadd(C,vmul(e,-1.0)),vadd(C,vmul(e,1.0)),{c:'b',w:2.6,lab:'b',le:'b',lo:[10,-10]}),
-   ang(C,d,[1,0,0],{r:.58,lab:'φ'}),ang(C,d,e,{r:.3,lab:'γ'}),
-   pt(C,'C',{o:[-12,14]}),pt(A,'A',{o:[-12,-6]}),pt(Ap,'A′',{o:[4,16]})];
- }};
-
-/* cube: line and plane */
-var CUBE_LP=[
- {id:'q1',ln:[0,5],pl:[0,1,2,3],ru:'AB₁ и ABC',kk:'AB₁ және ABC',
-  cap:{ru:'Проекция AB₁ на плоскость ABC — ребро AB (B₁B ⊥ ABC). Треугольник ABB₁ прямоугольный и равнобедренный, поэтому угол B₁AB = 45°.',
-       kk:'AB₁-дің ABC жазықтығына проекциясы — AB қыры (B₁B ⊥ ABC). ABB₁ үшбұрышы тікбұрышты және тең бүйірлі, сондықтан B₁AB бұрышы = 45°.'}},
- {id:'q2',ln:[1,7],pl:[0,1,2,3],ru:'BD₁ и ABC',kk:'BD₁ және ABC',
-  cap:{ru:'Проекция BD₁ на ABC — диагональ BD. В треугольнике BDD₁ tg φ = DD₁ : BD = 1 : √2 ≈ 0,71, поэтому φ ≈ 35,3°.',
-       kk:'BD₁-дің ABC жазықтығына проекциясы — BD диагоналі. BDD₁ үшбұрышында tg φ = DD₁ : BD = 1 : √2 ≈ 0,71, сондықтан φ ≈ 35,3°.'}},
- {id:'q3',ln:[0,5],pl:[1,2,6,5],ru:'AB₁ и BCC₁',kk:'AB₁ және BCC₁',
-  cap:{ru:'AB ⊥ BB₁ и AB ⊥ BC, значит, AB ⊥ BCC₁. Проекция AB₁ на эту плоскость — BB₁, угол AB₁B = 45°.',
-       kk:'AB ⊥ BB₁ және AB ⊥ BC, демек AB ⊥ BCC₁. AB₁-дің осы жазықтыққа проекциясы — BB₁, AB₁B бұрышы = 45°.'}},
- {id:'q4',ln:[0,5],pl:[1,2,7,4],ru:'AB₁ и BCD₁',kk:'AB₁ және BCD₁',
-  cap:{ru:'AB₁ ⊥ A₁B (диагонали квадрата) и AB₁ ⊥ BC, значит, по признаку AB₁ ⊥ плоскости BCD₁. Угол равен 90°.',
-       kk:'AB₁ ⊥ A₁B (квадрат диагональдары) және AB₁ ⊥ BC, демек белгі бойынша AB₁ ⊥ BCD₁ жазықтығы. Бұрыш 90°.'}}
-];
-function cubeLine(m){
- var P=cubeP(),V=P.V,p0=V[m.pl[0]],n=vunit(vcross(vsub(V[m.pl[1]],p0),vsub(V[m.pl[2]],p0))),d0=vdot(n,p0),
-     A=V[m.ln[0]],B=V[m.ln[1]],sa=vdot(n,A)-d0,sb=vdot(n,B)-d0,X,Y,t;
- if(Math.abs(sa)<1e-9){X=A;Y=B;}else if(Math.abs(sb)<1e-9){X=B;Y=A;}
- else{t=sa/(sa-sb);X=lerp(A,B,t);Y=Math.abs(sa)>=Math.abs(sb)?A:B;}
- var sY=vdot(n,Y)-d0,Yp=vsub(Y,vmul(n,sY)),phi=Math.asin(Math.min(1,Math.abs(vdot(n,vunit(vsub(B,A))))))/D,
-     ov=[pl(m.pl.map(function(i){return V[i];}),'c',null,0),ln(A,B,{c:'accent',w:3,lab:nmv(P,m.ln),le:'m',lt:.3,lo:[-18,-12]})];
- if(vlen(vsub(Yp,X))>1e-6){
-  ov.push(ln(X,Yp,{c:'c',w:2.8}),dashed(Y,Yp),ang(X,vsub(Y,X),vsub(Yp,X),{r:.34,lab:fmtN(phi,1)+'°'}));
- }else{
-  ov.push(ang(X,vsub(Y,X),vsub(V[m.pl[1]],V[m.pl[0]]),{r:.22,sq:true,lab:'90°'}));
- }
- P.ov=ov;return P;
-}
-ITEMS.l3={tag:'§16',
- title:{ru:'Угол между прямой и плоскостью в кубе',kk:'Кубтағы түзу мен жазықтық арасындағы бұрыш'},
- stmt:{ru:'Чтобы найти угол между прямой и плоскостью, строят ортогональную проекцию прямой на плоскость и находят угол между прямой и проекцией из прямоугольного треугольника. Если прямая перпендикулярна плоскости, угол равен 90°.',
-       kk:'Түзу мен жазықтық арасындағы бұрышты табу үшін түзудің жазықтыққа ортогональ проекциясын салып, түзу мен проекция арасындағы бұрышты тікбұрышты үшбұрыштан табады. Түзу жазықтыққа перпендикуляр болса, бұрыш 90°.'},
- sym:{ru:'sin φ = h : l,  cos φ = d : l,  tg φ = h : d',kk:'sin φ = h : l,  cos φ = d : l,  tg φ = h : d'},
- extra:{ru:'Здесь h — расстояние от точки наклонной до плоскости, l — длина наклонной, d — длина её проекции. Эти примеры взяты из задач 16.1 и 16.2 учебника.',kk:'Мұнда h — көлбеудің нүктесінен жазықтыққа дейінгі қашықтық, l — көлбеудің ұзындығы, d — оның проекциясының ұзындығы. Бұл мысалдар оқулықтың 16.1 және 16.2 есептерінен алынған.'},
- real:{ru:'Диагональ коробки и её основание образуют угол, который находят так же.',kk:'Қораптың диагоналі мен табаны арасындағы бұрыш да осылай табылады.'},
- def:'q1',v0:{yaw:-.85,pitch:.42},
- modes:CUBE_LP.map(function(m){return {id:m.id,ru:m.ru,kk:m.kk,cap:m.cap};}),
- poly:function(){return cubeP();},
- build:function(mm){return [cubeLine(CUBE_LP.filter(function(x){return x.id===mm;})[0])];}};
-
-function pyrEq(n){
- var a=1.35,R=a/(2*Math.sin(Math.PI/n)),h=Math.sqrt(a*a-R*R),base=ngon(n,R,-h/2,Math.PI*.75),F=[[]],names=[],i,j;
- for(i=0;i<n;i++){F[0].push(i);names.push(LET[i]);}
- for(i=0;i<n;i++){j=(i+1)%n;F.push([i,j,n]);}
- names.push('S');
- var P=poly(base.concat([[0,h/2,0]]),F,names),O=[0,-h/2,0],S=[0,h/2,0],A=base[0];
- P.ov=[dashed(S,O,'c'),dashed(O,A,'c'),pt(O,'O',{o:[10,12]}),ang(A,vsub(S,A),vsub(O,A),{r:.3,lab:'φ'}),rightAt(O,vsub(S,O),vsub(A,O),.14)];
- P.phi=Math.acos(R/a)/D;return P;
-}
-ITEMS.l4={tag:'§16',
- title:{ru:'Боковое ребро правильной пирамиды',kk:'Дұрыс пирамиданың бүйір қыры'},
- stmt:{ru:'В правильной пирамиде SABC… основание высоты SO — центр основания, поэтому проекция бокового ребра SA на плоскость основания — радиус OA. Угол между боковым ребром и основанием — угол SAO.',
-       kk:'Дұрыс SABC… пирамидасында SO биіктігінің табаны — табанның центрі, сондықтан SA бүйір қырының табан жазықтығына проекциясы — OA радиусы. Бүйір қыр мен табан арасындағы бұрыш — SAO бұрышы.'},
- sym:{ru:'cos φ = OA : SA',kk:'cos φ = OA : SA'},
- extra:{ru:'Когда все рёбра равны a, OA = a : (2 sin(180°/n)), поэтому cos φ = 1 : (2 sin(180°/n)). Для n = 4 получаем 45° (задача 16.3), для n = 3 — cos φ = 1 : √3 (задача 16.11).',kk:'Барлық қырлары a-ға тең болғанда OA = a : (2 sin(180°/n)), сондықтан cos φ = 1 : (2 sin(180°/n)). n = 4 үшін 45° (16.3 есеп), n = 3 үшін cos φ = 1 : √3 (16.11 есеп).'},
- real:{ru:'Крыша шатра: угол наклона ребра к земле.',kk:'Шатыр төбесі: қырдың жерге еңкею бұрышы.'},
- def:'one',
- slider:{min:3,max:5,def:4,sym:'n',unit:''},
- modes:[{id:'one',ru:'Все рёбра равны',kk:'Барлық қырлары тең',cap:null}],
- dyn:function(v,L){
-  var n=v.n,ph=pyrEq(n).phi;
-  return L==='ru'?(n+'-угольная пирамида, все рёбра равны. Угол между боковым ребром и основанием: φ ≈ '+fmtN(ph,1)+'°, cos φ = '+fmtN(Math.cos(ph*D),3)+'.'):
-   (n+' бұрышты пирамида, барлық қырлары тең. Бүйір қыр мен табан арасындағы бұрыш: φ ≈ '+fmtN(ph,1)+'°, cos φ = '+fmtN(Math.cos(ph*D),3)+'.');
- },
- poly:function(v){return pyrEq(v.n);},
- build:function(m,v){return [pyrEq(v.n)];}};
-
-/* ---------- reference data ---------- */
-var GROUPS=[
- {id:'ang',ru:'Углы',kk:'Бұрыштар'},
- {id:'perp',ru:'Перпендикуляр',kk:'Перпендикуляр'},
- {id:'proj',ru:'Проекция',kk:'Проекция'},
- {id:'form',ru:'Формулы',kk:'Формулалар'},
- {id:'logic',ru:'Знаки записи',kk:'Жазба белгілері'},
- {id:'term',ru:'Термины',kk:'Терминдер'}
-];
-var REF=[
- {g:'ang',s:'∠(a, b)',ru:'Угол между прямыми a и b. Для прямых в пространстве 0° ≤ φ ≤ 90°.',kk:'a және b түзулері арасындағы бұрыш. Кеңістіктегі түзулер үшін 0° ≤ φ ≤ 90°.',src:'app'},
- {g:'ang',s:'∠ABC',ru:'Угол с вершиной B. Вершина записывается посередине.',kk:'Төбесі B болатын бұрыш. Төбесі ортасында жазылады.',src:'§9'},
- {g:'ang',s:'φ, γ, ψ, θ',ru:'Греческие буквы для величин углов.',kk:'Бұрыштардың шамасын белгілейтін грек әріптері.',src:'app'},
- {g:'ang',s:'∠(a, α)',ru:'Угол между прямой a и плоскостью α. Это угол между наклонной и её проекцией, 0° ≤ φ ≤ 90°.',kk:'a түзуі мен α жазықтығы арасындағы бұрыш. Бұл көлбеу мен оның проекциясы арасындағы бұрыш, 0° ≤ φ ≤ 90°.',src:'§16'},
- {g:'ang',s:'∠ACA′',ru:'Угол между наклонной CA и её проекцией CA′.',kk:'CA көлбеуі мен оның CA′ проекциясы арасындағы бұрыш.',src:'§16'},
- {g:'perp',s:'a ⊥ b',ru:'Прямые перпендикулярны: угол между ними равен 90°.',kk:'Түзулер перпендикуляр: олардың арасындағы бұрыш 90°.',src:'§9'},
- {g:'perp',s:'a ⊥ α',ru:'Прямая перпендикулярна плоскости: она перпендикулярна любой прямой этой плоскости.',kk:'Түзу жазықтыққа перпендикуляр: ол осы жазықтықтың кез келген түзуіне перпендикуляр.',src:'§11'},
- {g:'perp',s:'AH ⊥ α',ru:'AH — перпендикуляр, опущенный из точки A на плоскость α.',kk:'AH — A нүктесінен α жазықтығына түсірілген перпендикуляр.',src:'§12'},
- {g:'perp',s:'H',ru:'Основание перпендикуляра — точка пересечения перпендикуляра с плоскостью.',kk:'Перпендикулярдың табаны — перпендикуляр мен жазықтықтың қиылысу нүктесі.',src:'§12'},
- {g:'perp',s:'ρ(A, α) = AH',ru:'Расстояние от точки A до плоскости α равно длине перпендикуляра AH.',kk:'A нүктесінен α жазықтығына дейінгі қашықтық AH перпендикулярының ұзындығына тең.',src:'§12'},
- {g:'proj',s:'AM',ru:'Наклонная: отрезок из точки A в точку M плоскости, не являющийся перпендикуляром.',kk:'Көлбеу: A нүктесінен жазықтықтың M нүктесіне баратын, перпендикуляр емес кесінді.',src:'§15'},
- {g:'proj',s:'HM',ru:'Проекция наклонной AM на плоскость α.',kk:'AM көлбеуінің α жазықтығына проекциясы.',src:'§12'},
- {g:'proj',s:'A′',ru:'Ортогональная проекция точки A на плоскость π.',kk:'A нүктесінің π жазықтығына ортогональ проекциясы.',ex:'AA′ ⊥ π',src:'§15'},
- {g:'proj',s:'c′',ru:'Ортогональная проекция прямой c на плоскость.',kk:'c түзуінің жазықтыққа ортогональ проекциясы.',src:'§15'},
- {g:'form',s:'AM² = AH² + HM²',ru:'Теорема Пифагора для треугольника AHM с прямым углом H.',kk:'H бұрышы тік AHM үшбұрышы үшін Пифагор теоремасы.',src:'§12'},
- {g:'form',s:'c² = a² + b² − 2ab·cos C',ru:'Теорема косинусов.',kk:'Косинус теоремасы.',src:'§9'},
- {g:'form',s:'cos C = (a² + b² − c²) / 2ab',ru:'Угол треугольника по трём сторонам.',kk:'Үш қабырғасы бойынша үшбұрыштың бұрышы.',src:'§9'},
- {g:'form',s:'sin φ = AH / AM',ru:'Угол между наклонной и плоскостью: противолежащий катет к гипотенузе.',kk:'Көлбеу мен жазықтық арасындағы бұрыш: қарсы катеттің гипотенузаға қатынасы.',src:'§16'},
- {g:'form',s:'cos φ = HM / AM',ru:'Прилежащий катет к гипотенузе.',kk:'Іргелес катеттің гипотенузаға қатынасы.',src:'§16'},
- {g:'form',s:'tg φ = AH / HM',ru:'Противолежащий катет к прилежащему.',kk:'Қарсы катеттің іргелес катетке қатынасы.',src:'§16'},
- {g:'form',s:'cos γ = cos φ · cos ψ',ru:'Угол γ между наклонной и прямой плоскости: φ — угол наклонной с плоскостью, ψ — угол прямой с проекцией.',kk:'Көлбеу мен жазықтықтағы түзу арасындағы γ бұрышы: φ — көлбеудің жазықтықпен бұрышы, ψ — түзудің проекциямен бұрышы.',src:'app'},
- {g:'form',s:'cos φ = |a·b| / (|a||b|)',ru:'Угол между прямыми через скалярное произведение направляющих векторов.',kk:'Бағыттаушы векторлардың скаляр көбейтіндісі арқылы түзулер арасындағы бұрыш.',src:'§20'},
- {g:'logic',s:'⇒',ru:'Следует: если выполнено левое, то выполнено правое.',kk:'Шығады: сол жағы орындалса, оң жағы орындалады.',src:'app'},
- {g:'logic',s:'⇔',ru:'Тогда и только тогда (равносильно).',kk:'Тек сонда ғана (пара-пар).',src:'app'},
- {g:'logic',s:'∥',ru:'Параллельность прямых.',kk:'Түзулердің параллельдігі.',ex:'a ∥ b',src:'§5'},
- {g:'logic',s:'⊂',ru:'Лежит в плоскости (в учебнике записывается ∈).',kk:'Жазықтықта жатады (оқулықта ∈ деп жазылады).',ex:'b ⊂ α',src:'§1'},
- {g:'logic',s:'∩',ru:'Пересечение.',kk:'Қиылысу.',ex:'C = a ∩ α',src:'§1'},
- {g:'logic',s:'≠, ≈',ru:'Не равно; приближённо равно.',kk:'Тең емес; шамамен тең.',src:'app'},
- {g:'logic',s:'°',ru:'Градус — единица измерения угла.',kk:'Градус — бұрыш өлшем бірлігі.',src:'app'}
-];
-var TERMS=[
- ['угол между прямыми','түзулер арасындағы бұрыш','§9'],
- ['пересекающиеся прямые','қиылысатын түзулер','§5'],
- ['скрещивающиеся прямые','айқас түзулер','§6'],
- ['параллельные прямые','параллель түзулер','§5'],
- ['перпендикулярные прямые','перпендикуляр түзулер','§9'],
- ['сонаправленные лучи','бағыттас сәулелер','§9'],
- ['острый угол','сүйір бұрыш','§9'],
- ['прямой угол','тік бұрыш','§9'],
- ['перпендикуляр к плоскости','жазықтыққа перпендикуляр','§12'],
- ['основание перпендикуляра','перпендикулярдың табаны','§12'],
- ['наклонная','көлбеу','§15'],
- ['проекция наклонной','көлбеудің проекциясы','§12'],
- ['ортогональная проекция','ортогональ проекция','§15'],
- ['ортогональное проектирование','ортогональ проекциялау','§15'],
- ['плоскость проектирования','проекциялау жазықтығы','§15'],
- ['расстояние от точки до плоскости','нүктеден жазықтыққа дейінгі қашықтық','§12'],
- ['признак перпендикулярности','перпендикулярлық белгісі','§11'],
- ['теорема о трёх перпендикулярах','үш перпендикуляр туралы теорема','§15'],
- ['угол между прямой и плоскостью','түзу мен жазықтық арасындағы бұрыш','§16'],
- ['угол между отрезком и плоскостью','кесінді мен жазықтық арасындағы бұрыш','§16'],
- ['теорема Пифагора','Пифагор теоремасы','§12'],
- ['теорема косинусов','косинус теоремасы','§9'],
- ['катет','катет','§9'],
- ['гипотенуза','гипотенуза','§9'],
- ['синус, косинус, тангенс','синус, косинус, тангенс','§9'],
- ['единичный куб','бірлік куб','§3*'],
- ['правильная пирамида','дұрыс пирамида','§4'],
- ['высота пирамиды','пирамиданың биіктігі','§12'],
- ['боковое ребро','бүйір қыр','§4'],
- ['диагональ грани','жақтың диагоналі','§9']
-];
-TERMS.forEach(function(t){REF.push({g:'term',t:1,ru:t[0],kk:t[1],src:t[2]});});
-
-/* ---------- quiz ---------- */
-var QUIZ=[
- {q:{ru:'Что называется углом между двумя пересекающимися прямыми?',kk:'Қиылысатын екі түзу арасындағы бұрыш деп нені айтады?'},
-  o:{ru:['Наибольший из образованных углов','Наименьший из образованных углов','Сумма двух смежных углов','Всегда прямой угол'],kk:['Пайда болған бұрыштардың ең үлкені','Пайда болған бұрыштардың ең кішісі','Екі сыбайлас бұрыштың қосындысы','Әрқашан тік бұрыш']},a:1,
-  w:{ru:'Пересекающиеся прямые образуют углы φ и 180° − φ. Углом между прямыми считают меньший из них.',kk:'Қиылысатын түзулер φ және 180° − φ бұрыштарын жасайды. Түзулер арасындағы бұрыш ретінде кішісін алады.'}},
- {q:{ru:'Чему не может быть равен угол между двумя прямыми в пространстве?',kk:'Кеңістіктегі екі түзу арасындағы бұрыш неге тең бола алмайды?'},
-  o:{ru:['30°','60°','90°','120°'],kk:['30°','60°','90°','120°']},a:3,
-  w:{ru:'Угол между прямыми не превосходит 90°: из двух углов φ и 180° − φ берут меньший.',kk:'Түзулер арасындағы бұрыш 90°-тан аспайды: φ және 180° − φ бұрыштарының кішісін алады.'}},
- {q:{ru:'В кубе ABCDA₁B₁C₁D₁ найдите угол между прямыми AC и BC₁.',kk:'ABCDA₁B₁C₁D₁ кубында AC және BC₁ түзулері арасындағы бұрышты табыңыз.'},
-  o:{ru:['30°','45°','60°','90°'],kk:['30°','45°','60°','90°']},a:2,
-  w:{ru:'BC₁ ∥ AD₁, а треугольник ACD₁ равносторонний (стороны — диагонали граней), угол CAD₁ = 60°.',kk:'BC₁ ∥ AD₁, ал ACD₁ үшбұрышы тең қабырғалы (қабырғалары — жақтардың диагональдары), CAD₁ бұрышы = 60°.'}},
- {q:{ru:'В кубе ABCDA₁B₁C₁D₁ найдите угол между рёбрами AB и CC₁.',kk:'ABCDA₁B₁C₁D₁ кубында AB және CC₁ қырлары арасындағы бұрышты табыңыз.'},
-  o:{ru:['0°','45°','60°','90°'],kk:['0°','45°','60°','90°']},a:3,
-  w:{ru:'CC₁ ∥ BB₁, а ребро AB перпендикулярно BB₁. Угол равен 90°.',kk:'CC₁ ∥ BB₁, ал AB қыры BB₁-ге перпендикуляр. Бұрыш 90°.'}},
- {q:{ru:'Диагонали AC₁ и BD₁ единичного куба пересекаются. Чему равен косинус угла между ними?',kk:'Бірлік кубтың AC₁ және BD₁ диагональдары қиылысады. Олардың арасындағы бұрыштың косинусы неге тең?'},
-  o:{ru:['1/2','1/3','√2/2','0'],kk:['1/2','1/3','√2/2','0']},a:1,
-  w:{ru:'Направляющие векторы (1, 1, −1) и (−1, 1, −1): скалярное произведение 1, длины √3 и √3, cos φ = 1/3, φ ≈ 70,5°.',kk:'Бағыттаушы векторлар (1, 1, −1) және (−1, 1, −1): скаляр көбейтінді 1, ұзындықтары √3 және √3, cos φ = 1/3, φ ≈ 70,5°.'}},
- {q:{ru:'Когда прямая перпендикулярна плоскости?',kk:'Түзу жазықтыққа қашан перпендикуляр болады?'},
-  o:{ru:['Когда она перпендикулярна одной прямой плоскости','Когда она перпендикулярна любой прямой этой плоскости','Когда она параллельна плоскости','Когда она лежит в плоскости'],kk:['Жазықтықтың бір түзуіне перпендикуляр болғанда','Осы жазықтықтың кез келген түзуіне перпендикуляр болғанда','Жазықтыққа параллель болғанда','Жазықтықта жатқанда']},a:1,
-  w:{ru:'Так звучит определение. Перпендикулярности одной прямой недостаточно.',kk:'Анықтамасы осылай айтылады. Бір түзуге перпендикулярлық жеткіліксіз.'}},
- {q:{ru:'Сколько прямых плоскости достаточно взять в признаке перпендикулярности прямой и плоскости?',kk:'Түзу мен жазықтықтың перпендикулярлық белгісінде жазықтықтың нешеуін алу жеткілікті?'},
-  o:{ru:['Одну прямую','Две любые прямые','Две пересекающиеся прямые','Три параллельные прямые'],kk:['Бір түзуді','Кез келген екі түзуді','Қиылысатын екі түзуді','Үш параллель түзуді']},a:2,
-  w:{ru:'Если прямая перпендикулярна двум пересекающимся прямым плоскости, то она перпендикулярна плоскости. Две параллельные прямые для этого не годятся.',kk:'Түзу жазықтықтағы қиылысатын екі түзуге перпендикуляр болса, ол жазықтыққа перпендикуляр. Екі параллель түзу үшін бұл орындалмайды.'}},
- {q:{ru:'Сколько прямых, перпендикулярных плоскости, можно провести через точку вне плоскости?',kk:'Жазықтықтан тыс нүкте арқылы жазықтыққа перпендикуляр неше түзу жүргізуге болады?'},
-  o:{ru:['Ни одной','Одну','Две','Бесконечно много'],kk:['Бірде-бір','Біреу','Екеу','Шексіз көп']},a:1,
-  w:{ru:'Свойство 1: такая прямая существует и единственна.',kk:'1-қасиет: мұндай түзу бар және жалғыз.'}},
- {q:{ru:'Две прямые перпендикулярны одной плоскости. Как они расположены?',kk:'Екі түзу бір жазықтыққа перпендикуляр. Олар қалай орналасқан?'},
-  o:{ru:['Скрещиваются','Пересекаются под углом 90°','Параллельны','Могут быть любыми'],kk:['Айқас','90° бұрышпен қиылысады','Параллель','Кез келген болуы мүмкін']},a:2,
-  w:{ru:'Свойство 3: две прямые, перпендикулярные одной плоскости, параллельны.',kk:'3-қасиет: бір жазықтыққа перпендикуляр екі түзу параллель.'}},
- {q:{ru:'Из точки A к плоскости проведены перпендикуляр AH = 3 и наклонная AM с проекцией HM = 4. Найдите AM.',kk:'A нүктесінен жазықтыққа AH = 3 перпендикуляры және проекциясы HM = 4 болатын AM көлбеуі жүргізілген. AM-ді табыңыз.'},
-  o:{ru:['5','7','√7','12'],kk:['5','7','√7','12']},a:0,
-  w:{ru:'AM² = AH² + HM² = 9 + 16 = 25, AM = 5.',kk:'AM² = AH² + HM² = 9 + 16 = 25, AM = 5.'}},
- {q:{ru:'Из одной точки к плоскости проведены две наклонные. Проекция первой равна 3 см, второй 2 см. Какая наклонная длиннее?',kk:'Бір нүктеден жазықтыққа екі көлбеу жүргізілген. Біріншісінің проекциясы 3 см, екіншісінікі 2 см. Қай көлбеу ұзынырақ?'},
-  o:{ru:['Вторая','Первая','Они равны','Нельзя определить'],kk:['Екінші','Бірінші','Олар тең','Анықтау мүмкін емес']},a:1,
-  w:{ru:'AM² = AH² + HM², а AH общий. Больше проекция — больше наклонная.',kk:'AM² = AH² + HM², ал AH ортақ. Проекциясы үлкен көлбеу ұзынырақ.'}},
- {q:{ru:'Лестница длиной 13 м упёрлась в стену на высоте 12 м. На каком расстоянии от стены её нижний конец?',kk:'Ұзындығы 13 м саты қабырғаға 12 м биіктікте тірелді. Оның төменгі ұшы қабырғадан қанша қашықтықта?'},
-  o:{ru:['1 м','5 м','7 м','√313 м'],kk:['1 м','5 м','7 м','√313 м']},a:1,
-  w:{ru:'Расстояние d: d² = 13² − 12² = 169 − 144 = 25, d = 5 м (задача 15.4).',kk:'Қашықтық d: d² = 13² − 12² = 169 − 144 = 25, d = 5 м (15.4 есеп).'}},
- {q:{ru:'Что утверждает теорема о трёх перпендикулярах?',kk:'Үш перпендикуляр туралы теорема нені тұжырымдайды?'},
-  o:{ru:['Три прямые, перпендикулярные плоскости, параллельны','Прямая плоскости, перпендикулярная проекции наклонной, перпендикулярна и наклонной','Перпендикуляр короче любой наклонной','Угол с плоскостью наименьший'],kk:['Жазықтыққа перпендикуляр үш түзу параллель','Жазықтықтағы көлбеу проекциясына перпендикуляр түзу көлбеуге де перпендикуляр','Перпендикуляр кез келген көлбеуден қысқа','Жазықтықпен бұрыш ең кіші']},a:1,
-  w:{ru:'Именно так она формулируется. Верно и обратное утверждение.',kk:'Теорема дәл осылай тұжырымдалады. Кері тұжырым да дұрыс.'}},
- {q:{ru:'Что называется углом между наклонной и плоскостью?',kk:'Көлбеу мен жазықтық арасындағы бұрыш деп нені айтады?'},
-  o:{ru:['Угол между наклонной и перпендикуляром','Угол между наклонной и её ортогональной проекцией на плоскость','Угол между проекцией и перпендикуляром','Угол между двумя наклонными'],kk:['Көлбеу мен перпендикуляр арасындағы бұрыш','Көлбеу мен оның жазықтыққа ортогональ проекциясы арасындағы бұрыш','Проекция мен перпендикуляр арасындағы бұрыш','Екі көлбеу арасындағы бұрыш']},a:1,
-  w:{ru:'Это определение. Для перпендикулярной прямой угол равен 90°, для параллельной 0°.',kk:'Бұл анықтама. Перпендикуляр түзу үшін бұрыш 90°, параллель түзу үшін 0°.'}},
- {q:{ru:'В кубе ABCDA₁B₁C₁D₁ найдите угол между прямой AB₁ и плоскостью ABC.',kk:'ABCDA₁B₁C₁D₁ кубында AB₁ түзуі мен ABC жазықтығы арасындағы бұрышты табыңыз.'},
-  o:{ru:['30°','45°','60°','90°'],kk:['30°','45°','60°','90°']},a:1,
-  w:{ru:'Проекция AB₁ на ABC — ребро AB. Треугольник ABB₁ прямоугольный равнобедренный, угол B₁AB = 45°.',kk:'AB₁-дің ABC жазықтығына проекциясы — AB қыры. ABB₁ үшбұрышы тікбұрышты тең бүйірлі, B₁AB бұрышы = 45°.'}},
- {q:{ru:'В кубе ABCDA₁B₁C₁D₁ найдите тангенс угла между прямой BD₁ и плоскостью ABC.',kk:'ABCDA₁B₁C₁D₁ кубында BD₁ түзуі мен ABC жазықтығы арасындағы бұрыштың тангенсін табыңыз.'},
-  o:{ru:['1','√2','√2/2','√3'],kk:['1','√2','√2/2','√3']},a:2,
-  w:{ru:'Проекция BD₁ на ABC — диагональ BD = √2, высота DD₁ = 1. tg φ = DD₁ : BD = 1/√2 = √2/2 (задача 16.2).',kk:'BD₁-дің ABC жазықтығына проекциясы — BD диагоналі = √2, биіктігі DD₁ = 1. tg φ = DD₁ : BD = 1/√2 = √2/2 (16.2 есеп).'}},
- {q:{ru:'В правильной четырёхугольной пирамиде SABCD все рёбра равны 1. Найдите угол между ребром SA и плоскостью основания.',kk:'Дұрыс төртбұрышты SABCD пирамидасының барлық қырлары 1-ге тең. SA қыры мен табан жазықтығы арасындағы бұрышты табыңыз.'},
-  o:{ru:['30°','45°','60°','90°'],kk:['30°','45°','60°','90°']},a:1,
-  w:{ru:'OA = √2/2, SA = 1, cos φ = OA : SA = √2/2, значит, φ = 45° (задача 16.3).',kk:'OA = √2/2, SA = 1, cos φ = OA : SA = √2/2, демек φ = 45° (16.3 есеп).'}}
-];
-
-/* ---------- state ---------- */
-/* ---------- state ---------- */
-var pref=LS.get('perp.prefs')||{};
-var TABS=['ang','perp','obl','lp','ref','qz'];
-var state={
- lang:(pref.lang==='kk'||pref.lang==='ru')?pref.lang:'kk',
- theme:(pref.theme==='dark'||pref.theme==='light')?pref.theme:((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'),
- tab:(TABS.indexOf(pref.tab)>=0)?pref.tab:'ang',
- size:(pref.size===0||pref.size===1||pref.size===2)?pref.size:1,
- views:{}, quiz:{i:0,sel:null,score:0,done:false}, ref:{q:'',g:'all'}
-};
-var UVALS=[1,1.25,1.6];
-function applySize(){
- var u=UVALS[state.size],r=document.documentElement.style,t=T[state.lang];
- r.setProperty('--u',u);r.setProperty('--k',1+(u-1)*.6);r.setProperty('--ul',1+(u-1)*.5);
- $('#sizeSeg').setAttribute('aria-label',t.sizeGroup);
- $$('#sizeSeg button').forEach(function(b){var i=+b.dataset.size;b.setAttribute('aria-pressed',String(i===state.size));b.setAttribute('aria-label',t.sizeNames[i]);b.title=t.sizeNames[i];});
-}
-function savePrefs(){LS.set('perp.prefs',{lang:state.lang,theme:state.theme,tab:state.tab,size:state.size});}
-function view(id){
- if(!state.views[id]){var it=ITEMS[id];state.views[id]={yaw:it.v0?it.v0.yaw:-.55,pitch:it.v0?it.v0.pitch:.5,mode:it.def,n:it.slider?it.slider.def:0};}
- return state.views[id];
-}
-function tagOf(id){var t=ITEMS[id].tag;return typeof t==='string'?t:t[state.lang];}
-
-/* ---------- 3D rendering ---------- */
-var S=108,CX=210,CY=150;
-function proj(p,v){
- var cy=Math.cos(v.yaw),sy=Math.sin(v.yaw),cp=Math.cos(v.pitch),sp=Math.sin(v.pitch);
- var x1=p[0]*cy+p[2]*sy,z1=-p[0]*sy+p[2]*cy;
- var y2=p[1]*cp-z1*sp,z2=p[1]*sp+z1*cp;
- return {x:CX+x1*S,y:CY-y2*S,z:z2};
-}
-function f1(n){return n.toFixed(1);}
-function polySVG(p,v){
- var cy=Math.cos(v.yaw),sy=Math.sin(v.yaw),cp=Math.cos(v.pitch),sp=Math.sin(v.pitch),i,R,c=[0,0,0];
- R=p.V.map(function(q){var x1=q[0]*cy+q[2]*sy,z1=-q[0]*sy+q[2]*cy;return [x1,q[1]*cp-z1*sp,q[1]*sp+z1*cp];});
- R.forEach(function(r){c[0]+=r[0];c[1]+=r[1];c[2]+=r[2];});
- c=c.map(function(x){return x/R.length;});
- var front=p.F.map(function(f){
-  var a=R[f[0]],b=R[f[1]],d=R[f[2]],u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],w=[d[0]-a[0],d[1]-a[1],d[2]-a[2]];
-  var n=[u[1]*w[2]-u[2]*w[1],u[2]*w[0]-u[0]*w[2],u[0]*w[1]-u[1]*w[0]],fc=[0,0,0];
-  f.forEach(function(k){fc[0]+=R[k][0];fc[1]+=R[k][1];fc[2]+=R[k][2];});
-  fc=fc.map(function(x){return x/f.length;});
-  if(n[0]*(fc[0]-c[0])+n[1]*(fc[1]-c[1])+n[2]*(fc[2]-c[2])<0)n=[-n[0],-n[1],-n[2]];
-  return n[2]>1e-6;
- });
- var sc=R.map(function(r){return {x:CX+r[0]*S,y:CY-r[1]*S};});
- var edges={},vis=R.map(function(){return false;});
- p.F.forEach(function(f,fi){
-  for(i=0;i<f.length;i++){
-   var a=f[i],b=f[(i+1)%f.length],k=a<b?a+'-'+b:b+'-'+a;
-   if(!edges[k])edges[k]={a:a,b:b,vis:false};
-   if(front[fi]){edges[k].vis=true;vis[a]=true;vis[b]=true;}
-  }
- });
- var hid='',shown='',fills='',labels='',k,e;
- for(k in edges){
-  e=edges[k];
-  var seg='<line x1="'+f1(sc[e.a].x)+'" y1="'+f1(sc[e.a].y)+'" x2="'+f1(sc[e.b].x)+'" y2="'+f1(sc[e.b].y)+'"';
-  if(e.vis)shown+=seg+' class="ln ln-ink" stroke-width="2"/>';
-  else hid+=seg+' class="ln ln-faint" stroke-width="1.3" stroke-dasharray="5 5"/>';
- }
- p.F.forEach(function(f,fi){
-  if(front[fi])fills+='<polygon class="pl-f" points="'+f.map(function(q){return f1(sc[q].x)+','+f1(sc[q].y);}).join(' ')+'"/>';
- });
- var mx=0,my=0;sc.forEach(function(s){mx+=s.x;my+=s.y;});mx/=sc.length;my/=sc.length;
- sc.forEach(function(s,idx){
-  var dx=s.x-mx,dy=s.y-my,d=Math.sqrt(dx*dx+dy*dy)||1;
-  labels+='<text class="lbl'+(vis[idx]?'':' lbl-h')+'" x="'+f1(Math.max(12,Math.min(408,s.x+dx/d*15)))+'" y="'+f1(Math.max(12,Math.min(288,s.y+dy/d*15)))+'">'+p.names[idx]+'</text>';
-  if(vis[idx])labels+='<circle class="pt" cx="'+f1(s.x)+'" cy="'+f1(s.y)+'" r="3.6"/>';
- });
- return hid+fills+shown+(p.ov?renderPrims(p.ov,v):'')+labels;
-}
-function clampX(x){return Math.max(14,Math.min(406,x));}
-function clampY(y){return Math.max(14,Math.min(286,y));}
-function renderPrims(prims,v){
- var items=prims.map(function(p){
-  if(p.k==='plane'){var q=p.pts.map(function(x){return proj(x,v)});return {p:p,q:q,z:q.reduce(function(s,a){return s+a.z},0)/q.length};}
-  if(p.k==='line'){var a=proj(p.a,v),b=proj(p.b,v);return {p:p,a:a,b:b,z:(a.z+b.z)/2+.25};}
-  if(p.k==='ang'){var o=proj(p.o,v);return {p:p,q:o,z:o.z+.35};}
-  var r=proj(p.p,v);return {p:p,q:r,z:r.z+.5};
- }).sort(function(x,y){return x.z-y.z});
- var shapes='',labels='';
- function P2(a){return a.map(function(q){return f1(q.x)+','+f1(q.y);}).join(' ');}
- items.forEach(function(it){
-  var p=it.p;
-  if(p.k==='plane'){
-   shapes+='<polygon class="pl-'+p.col+'" points="'+P2(it.q)+'"/>';
-   if(p.lab){
-    var cx=0,cy=0;it.q.forEach(function(a){cx+=a.x;cy+=a.y});cx/=it.q.length;cy/=it.q.length;
-    var c=it.q[p.li],dx=c.x-cx,dy=c.y-cy,d=Math.sqrt(dx*dx+dy*dy)||1;
-    labels+='<text class="lbl lbl-pl lbl-'+p.col+'" x="'+f1(clampX(c.x+dx/d*15))+'" y="'+f1(clampY(c.y+dy/d*15))+'">'+p.lab+'</text>';
-   }
-  }else if(p.k==='line'){
-   shapes+='<line class="ln ln-'+p.c+'" x1="'+f1(it.a.x)+'" y1="'+f1(it.a.y)+'" x2="'+f1(it.b.x)+'" y2="'+f1(it.b.y)+'" stroke-width="'+p.w+'"'+(p.d?' stroke-dasharray="5 5"':'')+'/>';
-   if(p.lab){
-    var lt=p.lt||.5,e=p.le==='a'?it.a:(p.le==='m'?{x:it.a.x+(it.b.x-it.a.x)*lt,y:it.a.y+(it.b.y-it.a.y)*lt}:it.b);
-    labels+='<text class="lbl lbl-ln" x="'+f1(clampX(e.x+p.lo[0]))+'" y="'+f1(clampY(e.y+p.lo[1]))+'">'+p.lab+'</text>';
-   }
-  }else if(p.k==='ang'){
-   var cs=[],th=Math.acos(Math.max(-1,Math.min(1,vdot(p.u,p.w)))),i,N=14,t,d2,ok=true;
-   if(p.sq){
-    var pa=vadd(p.o,vmul(p.u,p.r)),pb=vadd(pa,vmul(p.w,p.r)),pc=vadd(p.o,vmul(p.w,p.r));
-    var qs=[p.o,pa,pb,pc].map(function(x){return proj(x,v);});
-    shapes+='<polygon class="ang-f" points="'+P2(qs)+'"/><polyline class="ang-s" points="'+P2(qs.slice(1))+'"/>';
-   }else if(th>1e-3&&th<Math.PI-1e-3){
-    for(i=0;i<=N;i++){t=i/N;d2=vadd(vmul(p.u,Math.sin((1-t)*th)/Math.sin(th)),vmul(p.w,Math.sin(t*th)/Math.sin(th)));cs.push(proj(vadd(p.o,vmul(d2,p.r)),v));}
-    shapes+='<polygon class="ang-f" points="'+f1(it.q.x)+','+f1(it.q.y)+' '+P2(cs)+'"/><polyline class="ang-s" points="'+P2(cs)+'"/>';
-   }else ok=false;
-   if(p.lab&&ok){
-    var bs=vadd(p.u,p.w);
-    if(vlen(bs)>1e-3){var lp=proj(vadd(p.o,vmul(vunit(bs),p.r*(p.sq?2.3:1.55))),v);
-     labels+='<text class="lbl lbl-ang lbl-b" x="'+f1(clampX(lp.x))+'" y="'+f1(clampY(lp.y))+'">'+p.lab+'</text>';}
-   }
+/* ================= ПОСТРОЙ ГРАФИК ================= */
+const DR={mode:'pts',seed:1,pts:[],lv:{},checked:false,show:false};
+function drTask(){return withSeed(DR.seed,()=>{
+  if(DR.mode==='pts'){// таблица (t; s) с возможной остановкой
+    for(let k=0;k<100;k++){const step=pick([1,2,5]);const v1=step*ri(1,3),stop=rnd()<.6,t1=ri(2,4),t2=stop?ri(1,3):0;const v2=step*pick([1,2,3].filter(x=>x*step!==v1));const T=Math.min(9,t1+t2+ri(2,4));
+      const segs=[{d:t1,v0:v1,v1:v1}];if(stop)segs.push({d:t2,v0:0,v1:0});segs.push({d:T-t1-t2,v0:v2,v1:v2});const M=motion(segs);if(M.S/step>16||T-t1-t2<1)continue;
+      const rows=[];for(let t=0;t<=T;t++)rows.push([t,M.at(t).s]);return{M,rows,T,step,smax:(Math.floor(M.S/step)+2)*step};}}
+  const n=pick([2,3]);const segs=[];let left=10;for(let i=0;i<n;i++){const d=i===n-1?left:ri(2,Math.min(5,left-2*(n-1-i)));left-=d;segs.push({d,v0:0,v1:0});}
+  const pool=shuffle([0,1,2,3,4,5,6]);segs.forEach((g,i)=>{g.v0=g.v1=pool[i];});if(segs.every(g=>g.v0===0))segs[0].v0=segs[0].v1=3;const M=motion(segs);return{M,T:10,step:nice(Math.max(M.S,1)*1.1,8)};});}
+function drawDraw(){const TK=drTask();$('#dMode').innerHTML=[['pts',L('точки по таблице','кесте бойынша нүктелер')],['vel',L('скорость по графику пути','жол графигі бойынша жылдамдық')]].map(([k,n])=>`<button data-m="${k}" aria-pressed="${k===DR.mode}">${n}</button>`).join('');
+  const svg=$('#dSvg');svg.innerHTML='';const fb=$('#dFb');
+  if(DR.mode==='pts'){
+    $('#dTask').innerHTML=L('Отметьте на графике точки из таблицы (нажимайте на узлы сетки; повторное нажатие убирает точку). Затем нажмите «Проверить».','Кестедегі нүктелерді графикте белгілеңіз (тор түйіндерін басыңыз; қайта басу нүктені алып тастайды). Содан кейін «Тексеру» батырмасын басыңыз.');
+    $('#dLeft').innerHTML=`<span class="lbl">${L('Таблица','Кесте')}</span><div class="tbl-wrap"><table><thead><tr><th>t, ${SS()}</th><th>s, ${MM()}</th></tr></thead><tbody>${TK.rows.map(([t,s])=>`<tr><td>${t}</td><td>${fmt(s)}</td></tr>`).join('')}</tbody></table></div>`;
+    const P=mkPlot(svg,{x0:0,x1:TK.T,y0:0,y1:TK.smax,W:680,H:420,pl:64});svg._P=P;svg._TK=TK;
+    axes(svg,P,{x0:0,x1:TK.T,y0:0,y1:TK.smax,xt:ticks(0,TK.T,1),yt:ticks(0,TK.smax,TK.step),xl:'t, '+SS(),yl:'s, '+MM()});
+    const ok=new Set(TK.rows.map(([t,s])=>t+'|'+s));
+    if(DR.show||DR.checked&&DR.pts.length===TK.rows.length&&DR.pts.every(p=>ok.has(p.join('|')))){path(svg,TK.rows.map(([t,s])=>[P.X(t),P.Y(s)]),{stroke:'var(--c1)'});}
+    if(DR.show)TK.rows.forEach(([t,s])=>{if(!DR.pts.some(p=>p[0]===t&&p[1]===s))el('circle',{cx:P.X(t),cy:P.Y(s),r:8,fill:'none',stroke:'var(--c4)','stroke-width':3,'stroke-dasharray':'3 3'},svg);});
+    DR.pts.forEach(([t,s])=>{const good=ok.has(t+'|'+s);el('circle',{cx:P.X(t),cy:P.Y(s),r:8,fill:DR.checked?(good?'var(--ok)':'var(--bad)'):'var(--c2)'},svg);});
+    if(DR.checked){const right=DR.pts.filter(p=>ok.has(p.join('|'))).length,wrong=DR.pts.length-right,miss=TK.rows.length-right;
+      fb.className='fb '+(wrong===0&&miss===0?'ok':'bad');fb.innerHTML=wrong===0&&miss===0?L('Отлично! Все точки на месте — соединили их линией. Определите по графику скорость на каждом участке.','Тамаша! Барлық нүкте орнында — оларды сызықпен қостық. График бойынша әр бөліктегі жылдамдықты анықтаңыз.'):L(`Верно: ${right}, ошибочных: ${wrong}, не хватает: ${miss}.`,`Дұрыс: ${right}, қате: ${wrong}, жетіспейді: ${miss}.`);}else fb.innerHTML='';
   }else{
-   shapes+='<circle class="pt" cx="'+f1(it.q.x)+'" cy="'+f1(it.q.y)+'" r="4.6"/>';
-   labels+='<text class="lbl" x="'+f1(clampX(it.q.x+p.o[0]))+'" y="'+f1(clampY(it.q.y+p.o[1]))+'">'+p.lab+'</text>';
-  }
- });
- return shapes+labels;
-}
-function renderScene(prims,v){
- var polyP=prims.filter(function(p){return p.k==='poly';})[0];
- if(polyP)return polySVG(polyP,v);
- return renderPrims(prims,v);
-}
-function drawFig(id){
- var svg=$('svg[data-fig="'+id+'"]');if(!svg)return;
- var it=ITEMS[id],v=view(id),L=state.lang,t=T[L];
- svg.innerHTML=renderScene(it.build(v.mode,v),v);
- var cap=$('[data-cap="'+id+'"]');
- if(cap){
-  if(it.dyn)cap.textContent=it.dyn(v,L);
-  else{var m=it.modes.filter(function(x){return x.id===v.mode})[0];if(m&&m.cap)cap.textContent=m.cap[L];}
- }
- var cn=$('[data-counts="'+id+'"]');
- if(cn&&it.poly){
-  var c=polyCounts(it.poly(v));
-  cn.innerHTML=c.map(function(x,i){return '<div class="count"><span>'+t.cntNames[i]+' ('+t.cntLetters[i]+')</span><b>'+x+'</b></div>';}).join('');
- }
-}
+    $('#dTask').innerHTML=L('Слева — график пути. Постройте график скорости: нажмите на сетку внутри каждого участка на высоте его скорости. Затем «Проверить».','Сол жақта — жол графигі. Жылдамдық графигін салыңыз: әр бөліктің ішінде оның жылдамдығы биіктігінде торды басыңыз. Содан кейін «Тексеру».');
+    $('#dLeft').innerHTML=`<span class="lbl">${L('График пути s(t)','Жол графигі s(t)')}</span>`+gStr({W:560,H:360,x1:10,y1:Math.ceil(TK.M.S*1.1/TK.step)*TK.step||TK.step,xl:'t, '+SS(),yl:'s, '+MM(),xt:ticks(0,10,1),yt:ticks(0,Math.ceil(TK.M.S*1.1/TK.step)*TK.step||TK.step,TK.step)},(s2,P)=>{path(s2,stPts(TK.M,P),{stroke:'var(--c1)'});TK.M.segs.forEach(o=>el('circle',{cx:P.X(o.t1),cy:P.Y(o.s1),r:5,fill:'var(--c1)'},s2));});
+    const vmax=8;const P=mkPlot(svg,{x0:0,x1:10,y0:0,y1:vmax,W:680,H:420,pl:64});svg._P=P;svg._TK=TK;
+    axes(svg,P,{x0:0,x1:10,y0:0,y1:vmax,xt:ticks(0,10,1),yt:ticks(0,vmax,1),xl:'t, '+SS(),yl:'v, '+MS()});
+    TK.M.segs.forEach((o,i)=>{el('line',{x1:P.X(o.t1),x2:P.X(o.t1),y1:P.Y(0),y2:P.Y(vmax),stroke:'var(--muted)','stroke-dasharray':'2 5'},svg);
+      const lv=DR.lv[i];if(DR.show){el('line',{x1:P.X(o.t0),x2:P.X(o.t1),y1:P.Y(o.v0),y2:P.Y(o.v0),stroke:'var(--c4)','stroke-width':6,'stroke-opacity':.5},svg);}
+      if(lv!=null){const good=Math.abs(lv-o.v0)<1e-9;el('line',{x1:P.X(o.t0),x2:P.X(o.t1),y1:P.Y(lv),y2:P.Y(lv),stroke:DR.checked?(good?'var(--ok)':'var(--bad)'):'var(--c2)','stroke-width':4},svg);}});
+    if(DR.checked){const n=TK.M.segs.length,right=TK.M.segs.filter((o,i)=>DR.lv[i]!=null&&Math.abs(DR.lv[i]-o.v0)<1e-9).length;fb.className='fb '+(right===n?'ok':'bad');
+      fb.innerHTML=right===n?L('Верно! Скорость на участке = изменение пути : время участка.','Дұрыс! Бөліктегі жылдамдық = жолдың өзгерісі : бөлік уақыты.'):L(`Верно ${right} из ${n}. Подсказка: v = Δs : Δt для каждого участка.`,`${n}-ден ${right} дұрыс. Кеңес: әр бөлік үшін v = Δs : Δt.`);}else fb.innerHTML='';}}
+$('#dSvg').addEventListener('click',e=>{const svg=$('#dSvg'),P=svg._P,TK=svg._TK;if(!P)return;const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());
+  const inv=(v,a,b,f)=>{let lo=a,hi=b;for(let k=0;k<40;k++){const m=(lo+hi)/2;if((f(m)-v)*(f(b)-f(a))>0)hi=m;else lo=m;}return(lo+hi)/2;};
+  if(DR.mode==='pts'){const t=Math.round(inv(q.x,0,TK.T,P.X)),s=Math.round(inv(q.y,0,TK.smax,P.Y)/TK.step)*TK.step;if(t<0||t>TK.T||s<0||s>TK.smax)return;const i=DR.pts.findIndex(p=>p[0]===t&&p[1]===s);if(i>=0)DR.pts.splice(i,1);else{DR.pts=DR.pts.filter(p=>p[0]!==t);DR.pts.push([t,s]);}}
+  else{const t=inv(q.x,0,10,P.X),v=Math.round(inv(q.y,0,8,P.Y));if(t<0||t>10||v<0||v>8)return;const i=TK.M.segs.findIndex(o=>t>=o.t0&&t<=o.t1);if(i<0)return;DR.lv[i]=v;}
+  DR.checked=false;drawDraw();});
+$('#dMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;DR.mode=b.dataset.m;newDraw();});
+function newDraw(){DR.seed=newSeed();DR.pts=[];DR.lv={};DR.checked=false;DR.show=false;drawDraw();}
+$('#dNew').addEventListener('click',newDraw);$('#dCheck').addEventListener('click',()=>{DR.checked=true;drawDraw();});
+$('#dClear').addEventListener('click',()=>{DR.pts=[];DR.lv={};DR.checked=false;DR.show=false;drawDraw();});$('#dShow').addEventListener('click',()=>{DR.show=true;drawDraw();});
 
-/* ---------- views ---------- */
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
-function cardHTML(id){
- var it=ITEMS[id],L=state.lang,t=T[L],v=view(id),modes='';
- if(it.modes.length>1){
-  modes='<div class="modes" role="group">'+it.modes.map(function(m){
-   return '<button type="button" class="mode" data-act="mode" data-id="'+id+'" data-mode="'+m.id+'" aria-pressed="'+(v.mode===m.id)+'">'+m[L]+'</button>';
-  }).join('')+'</div>';
- }
- var slider='';
- if(it.slider){
-  slider='<label class="slider" for="n-'+id+'"><span>'+(it.slider.sym||'n')+' = <b id="nv-'+id+'">'+(it.slider.fmt?it.slider.fmt(v.n):v.n)+'</b>'+(it.slider.unit||'')+'</span><input type="range" id="n-'+id+'" data-id="'+id+'" min="'+it.slider.min+'" max="'+it.slider.max+'" value="'+v.n+'"></label>';
- }
- var proof='';
- if(it.proof){
-  proof='<details class="proof"><summary>'+t.proof+'</summary><ol>'+it.proof.map(function(s){
-   return '<li>'+esc(s[L])+(s.ref?s.ref.map(function(r){return '<span class="ref">'+esc(tagOf(r))+'</span>';}).join(''):'')+'</li>';
-  }).join('')+'</ol></details>';
- }
- var defs=it.defs?'<ul class="defs">'+it.defs[L].map(function(d){return '<li>'+esc(d)+'</li>';}).join('')+'</ul>':'';
- var extra=it.extra?'<p class="extra"><b>'+t.more+'.</b> '+esc(it.extra[L])+'</p>':'';
- return '<article class="card" id="card-'+id+'">'+
-  '<div class="c-text">'+
-   '<div class="c-head"><span class="tag">'+esc(tagOf(id))+'</span><h2>'+it.title[L]+'</h2></div>'+
-   '<p class="stmt">'+it.stmt[L]+'</p>'+defs+
-   '<p class="sym"><small>'+t.sym+'</small>'+it.sym[L]+'</p>'+extra+
-   '<div class="real"><small>'+t.real+'</small><p>'+it.real[L]+'</p></div>'+
-   proof+
-  '</div>'+
-  '<div class="c-fig">'+
-   '<figure class="fig"><svg data-fig="'+id+'" viewBox="0 0 420 300" role="img" tabindex="0" aria-label="'+esc(it.title[L])+'"></svg>'+
-   '<figcaption data-cap="'+id+'"></figcaption></figure>'+
-   (it.counts?'<div class="counts" data-counts="'+id+'"></div>':'')+
-   modes+slider+
-   '<div class="fig-foot"><span>'+t.hint+'</span><button type="button" class="link-btn" data-act="reset" data-id="'+id+'">'+t.reset+'</button></div>'+
-  '</div></article>';
-}
-function legendHTML(){
- var L=state.lang;
- return '<details class="legend"><summary>'+T[L].notation+'</summary><ul class="legend-g">'+
-  LEGEND.map(function(r){return '<li><b>'+r[0]+'</b><span>'+r[1][L]+'</span></li>'}).join('')+'</ul></details>';
-}
-function pick(x,L){return (x&&typeof x==='object')?x[L]:x;}
-function refMatch(e,L,q){
- if(!q)return true;
- var hay=[pick(e.s,'ru'),pick(e.s,'kk'),e.ru,e.kk,pick(e.ex,'ru'),pick(e.ex,'kk')].join(' ').toLowerCase();
- return hay.indexOf(q.toLowerCase())>=0;
-}
-function refCard(e,L,t){
- var top;
- if(e.t){
-  var other=L==='ru'?'kk':'ru';
-  top='<div class="rc-top"><div class="rc-term">'+esc(e[L])+'</div><span class="rc-src">'+esc(e.src)+'</span></div><p class="rc-alt">'+(other==='ru'?'рус':'қаз')+': '+esc(e[other])+'</p>';
-  return '<div class="rc">'+top+'</div>';
- }
- var s=pick(e.s,L),ex=pick(e.ex,L),src=pick(e.src,L);
- return '<div class="rc"><div class="rc-top"><button type="button" class="symbtn" data-act="copy" data-sym="'+esc(s).replace(/"/g,'&quot;')+'" aria-label="'+esc(t.copied)+': '+esc(s).replace(/"/g,'&quot;')+'">'+esc(s)+'</button>'+
-  '<span class="rc-src">'+(src==='app'?(L==='ru'?'в приложении':'қосымшада'):esc(src))+'</span></div>'+
-  '<p class="rc-txt">'+esc(e[L])+'</p>'+(ex?'<p class="rc-ex">'+esc(ex)+'</p>':'')+'</div>';
-}
-function refGridHTML(){
- var L=state.lang,t=T[L],q=state.ref.q.trim(),g=state.ref.g,out='',any=false;
- GROUPS.forEach(function(gr){
-  if(g!=='all'&&g!==gr.id)return;
-  var list=REF.filter(function(e){return e.g===gr.id&&refMatch(e,L,q);});
-  if(!list.length)return;
-  any=true;
-  out+='<section class="rgroup"><h3>'+gr[L]+'</h3><div class="ref-grid">'+list.map(function(e){return refCard(e,L,t);}).join('')+'</div></section>';
- });
- return any?out:'<p class="empty">'+t.empty+'</p>';
-}
-function refHTML(){
- var L=state.lang,t=T[L];
- var chips='<button type="button" class="mode" data-act="rgroup" data-g="all" aria-pressed="'+(state.ref.g==='all')+'">'+t.all+'</button>'+
-  GROUPS.map(function(gr){return '<button type="button" class="mode" data-act="rgroup" data-g="'+gr.id+'" aria-pressed="'+(state.ref.g===gr.id)+'">'+gr[L]+'</button>';}).join('');
- return '<div class="stack"><p class="intro">'+t.intro.ref+'</p>'+
-  '<div class="ref-tools"><input type="search" id="refq" class="search" placeholder="'+esc(t.search)+'" value="'+esc(state.ref.q).replace(/"/g,'&quot;')+'" autocomplete="off"><div class="chips" role="group">'+chips+'</div></div>'+
-  '<div id="refGrid" style="display:grid;gap:18px">'+refGridHTML()+'</div><p class="src-note">'+t.srcNote+'</p></div>';
-}
-function quizHTML(){
- var L=state.lang,t=T[L],q=state.quiz,n=QUIZ.length;
- if(q.done){
-  var msg=q.score>=n-1?t.r5:(q.score>=Math.ceil(n*.6)?t.r3:t.r0);
-  return '<section class="card quiz"><div class="q-n">'+t.result+'</div><div class="score">'+q.score+' '+t.of+' '+n+'</div><p class="q-t">'+msg+'</p>'+
-   '<button type="button" class="btn" data-act="qrestart">'+t.again+'</button></section>';
- }
- var it=QUIZ[q.i],dots='',i;
- for(i=0;i<n;i++)dots+='<i class="'+(i<=q.i?'on':'')+'"></i>';
- var opts=it.o[L].map(function(o,i){
-  var cls='opt',dis='';
-  if(q.sel!==null){dis=' disabled';if(i===it.a)cls+=' ok';else if(i===q.sel)cls+=' bad';}
-  return '<button type="button" class="'+cls+'" data-act="qpick" data-i="'+i+'"'+dis+'><span class="k">'+String.fromCharCode(65+i)+'</span><span>'+o+'</span></button>';
- }).join('');
- var fb='';
- if(q.sel!==null){
-  var good=q.sel===it.a;
-  fb='<p class="fb" role="status"><b class="'+(good?'ok':'bad')+'">'+(good?t.ok:t.bad)+'</b> '+it.w[L]+'</p>'+
-   '<button type="button" class="btn" data-act="qnext">'+(q.i===n-1?t.finish:t.next)+'</button>';
- }
- return '<section class="card quiz"><div class="prog" aria-hidden="true">'+dots+'</div>'+
-  '<div class="q-n">'+t.qOf+' '+(q.i+1)+' '+t.of+' '+n+'</div><h2 class="q-t">'+it.q[L]+'</h2><div class="opts">'+opts+'</div>'+fb+'</section>';
-}
-function renderView(){
- var L=state.lang,t=T[L],h='',tab=state.tab;
- if(LIST[tab]){
-  h='<div class="stack"><p class="intro">'+t.intro[tab]+'</p>'+(tab==='ang'?legendHTML():'')+LIST[tab].map(cardHTML).join('')+'<p class="src-note">'+t.srcNote+'</p></div>';
- }else if(tab==='ref')h=refHTML();
- else h='<div class="stack">'+quizHTML()+'</div>';
- $('#view').innerHTML=h;
- (LIST[tab]||[]).forEach(drawFig);
-}
-function renderTabs(){
- var t=T[state.lang];
- $('#tabs').innerHTML=TABS.map(function(k){
-  return '<button type="button" class="tab" role="tab" data-act="tab" data-tab="'+k+'" aria-selected="'+(state.tab===k)+'">'+t.tabs[k]+'</button>';
- }).join('');
-}
-var ICON={
- sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
- moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
- pen:'<path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 3L8 19l-4 1z"/><path d="M14.5 6.5l3 3"/>',
- eraser:'<path d="M9 19h11"/><path d="M5.6 15.4l8.8-8.8a2 2 0 0 1 2.8 0l2.2 2.2a2 2 0 0 1 0 2.8L12.5 19H9.4a2 2 0 0 1-1.4-.6l-2.4-2.4a1 1 0 0 1 0-1.4z"/>',
- undo:'<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
- trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'
-};
-function svgI(n){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICON[n]+'</svg>';}
-function renderTheme(){
- var t=T[state.lang],b=$('#themeBtn');
- document.documentElement.setAttribute('data-theme',state.theme);
- b.innerHTML=svgI(state.theme==='dark'?'sun':'moon');
- var lab=state.theme==='dark'?t.toLight:t.toDark;
- b.setAttribute('aria-label',lab);b.setAttribute('title',lab);
-}
+/* ================= ЗАДАЧИ ================= */
+function stGraph(M,opt){opt=opt||{};const smax=Math.ceil(M.S*1.12/nice(M.S*1.12,8))*nice(M.S*1.12,8);return gStr({x1:M.T,y1:smax,xl:'t, '+SS(),yl:'s, '+MM(),xt:ticks(0,M.T,nice(M.T,12)),yt:ticks(0,smax,nice(smax,8))},(svg,P)=>{path(svg,stPts(M,P),{stroke:'var(--c1)'});M.segs.forEach(o=>el('circle',{cx:P.X(o.t1),cy:P.Y(o.s1),r:5,fill:'var(--c1)'},svg));});}
+function vtGraph(M){const vmax=Math.max(...M.segs.map(g=>Math.max(g.v0,g.v1)))*1.3||1;const vm=Math.ceil(vmax/nice(vmax,6))*nice(vmax,6);return gStr({x1:M.T,y1:vm,xl:'t, '+SS(),yl:'v, '+MS(),xt:ticks(0,M.T,nice(M.T,12)),yt:ticks(0,vm,nice(vm,6))},(svg,P)=>path(svg,vtPts(M,P),{stroke:'var(--c1)'}));}
+const PCAT=()=>({vst:L('Скорость по графику пути','Жол графигі бойынша жылдамдық'),seg:L('Скорость на участке','Бөліктегі жылдамдық'),rest:L('Время остановки','Аялдама уақыты'),path:L('Путь по графику скорости','Жылдамдық графигі бойынша жол'),avg:L('Средняя скорость по графику','График бойынша орташа жылдамдық'),two:L('Два тела','Екі дене'),tri:L('Путь при разгоне','Үдеу кезіндегі жол')});
+function pVst(){const v=pick([1,2,3,4,5,6,8,10,12,15]);const T=pick([5,8,10]);const M=motion([{d:T,v0:v,v1:v}]);
+  return{text:L('По графику пути найдите скорость равномерного движения тела.','Жол графигі бойынша дененің бірқалыпты қозғалысының жылдамдығын табыңыз.')+stGraph(M),given:L('график s(t)','s(t) графигі'),
+    steps:[{why:L('Берём точку на графике:','Графиктен нүкте аламыз:'),mx:`t = ${T} ${SS()}, s = ${v*T} ${MM()}`},{why:L('Скорость:','Жылдамдық:'),mx:`v = ${frac('s','t')} = ${frac(v*T,T)} = ${v} ${MS()}`}],ans:v,unit:MS()};}
+function pieceM(n,withStop){for(let k=0;k<50;k++){const segs=[];let left=10;for(let i=0;i<n;i++){const d=i===n-1?left:ri(2,Math.min(5,left-2*(n-1-i)));left-=d;segs.push({d});}
+    const vs=shuffle([1,2,3,4,5,6]);segs.forEach((g,i)=>{g.v0=g.v1=vs[i];});if(withStop){const j=ri(1,n-1);segs[j].v0=segs[j].v1=0;}if(segs.every(g=>g.d>=1))return motion(segs);}return motion([{d:4,v0:3,v1:3},{d:3,v0:0,v1:0},{d:3,v0:5,v1:5}]);}
+function pSeg(){const M=pieceM(3,rnd()<.4);const i=ri(0,2);const o=M.segs[i];
+  return{text:L(`Найдите скорость тела на ${i+1}-м участке (с ${fmt(o.t0)} по ${fmt(o.t1)} с).`,`${i+1}-бөліктегі (${fmt(o.t0)}-ден ${fmt(o.t1)} с-қа дейін) дененің жылдамдығын табыңыз.`)+stGraph(M),given:L('график s(t)','s(t) графигі'),
+    steps:[{why:L('Изменение пути и время участка:','Бөліктегі жолдың өзгерісі және уақыты:'),mx:`Δs = ${fmt(o.s1)} − ${fmt(o.s0)} = ${fmt(o.ds)} ${MM()}; &nbsp; Δt = ${fmt(o.t1)} − ${fmt(o.t0)} = ${fmt(o.d)} ${SS()}`},{why:L('Скорость:','Жылдамдық:'),mx:`v = ${frac('Δs','Δt')} = ${frac(fmt(o.ds),fmt(o.d))} = ${fmt(o.v0)} ${MS()}`+(o.v0===0?L(' — тело стоит',' — дене тұр'):'')}],ans:o.v0,unit:MS(),abs:1e-6};}
+function pRest(){const M=pieceM(3,true);const o=M.segs.find(g=>g.v0===0);
+  return{text:L('Сколько времени тело стояло?','Дене қанша уақыт тұрды?')+stGraph(M),given:L('график s(t)','s(t) графигі'),steps:[{why:L('Горизонтальный участок графика пути — тело стоит:','Жол графигінің горизонталь бөлігі — дене тұр:'),mx:`t = ${fmt(o.t0)} … ${fmt(o.t1)} ${SS()}`},{why:L('Время остановки:','Аялдама уақыты:'),mx:`t = ${fmt(o.t1)} − ${fmt(o.t0)} = ${fmt(o.d)} ${SS()}`}],ans:o.d,unit:SS()};}
+function pPath(){const n=pick([1,2,3]);const M=pieceM(n,n>1&&rnd()<.3);
+  return{text:L('По графику скорости найдите путь, пройденный телом за всё время движения.','Жылдамдық графигі бойынша дененің бүкіл қозғалыс уақытында жүрген жолын табыңыз.')+vtGraph(M),given:L('график v(t)','v(t) графигі'),
+    steps:[{why:L('Путь на каждом участке — площадь прямоугольника s = v·t:','Әр бөліктегі жол — тіктөртбұрыштың ауданы s = v·t:'),mx:M.segs.map((o,i)=>`s<sub>${i+1}</sub> = ${fmt(o.v0)} · ${fmt(o.d)} = ${fmt(o.ds)} ${MM()}`).join('<br>')},{why:L('Весь путь:','Барлық жол:'),mx:`s = ${M.segs.map(o=>fmt(o.ds)).join(' + ')} = ${fmt(M.S)} ${MM()}`}],ans:M.S,unit:MM()};}
+function pAvg(){const M=pieceM(pick([2,3]),rnd()<.5);
+  return{text:L('По графику пути найдите среднюю скорость тела за всё время движения.','Жол графигі бойынша дененің бүкіл қозғалыс уақытындағы орташа жылдамдығын табыңыз.')+stGraph(M),given:L('график s(t)','s(t) графигі'),
+    steps:[{why:L('Весь путь и всё время (по последней точке графика):','Барлық жол және барлық уақыт (графиктің соңғы нүктесі бойынша):'),mx:`s = ${fmt(M.S)} ${MM()}, t = ${fmt(M.T)} ${SS()}`},{why:L('Средняя скорость:','Орташа жылдамдық:'),mx:`v<sub>${L('ср','орт')}</sub> = ${frac(fmt(M.S),fmt(M.T))} = ${fmt(M.S/M.T,3)} ${MS()}`}],ans:M.S/M.T,unit:MS(),tol:.01};}
+function pTwo(){const v1=pick([3,4,5,6]),v2=pick([1,2]);const T=10;const smax=Math.ceil(v1*T*1.12/10)*10;
+  const g=gStr({x1:T,y1:smax,xl:'t, '+SS(),yl:'s, '+MM(),xt:ticks(0,T,1),yt:ticks(0,smax,10)},(svg,P)=>{path(svg,[[P.X(0),P.Y(0)],[P.X(T),P.Y(v1*T)]],{stroke:'var(--c1)'});txt(svg,'1',P.X(T)-12,P.Y(v1*T)-8,{'font-size':19,'font-weight':'bold',fill:'var(--c1)'});path(svg,[[P.X(0),P.Y(0)],[P.X(T),P.Y(v2*T)]],{stroke:'var(--c2)'});txt(svg,'2',P.X(T)-12,P.Y(v2*T)-8,{'font-size':19,'font-weight':'bold',fill:'var(--c2)'});});
+  return{text:L('Во сколько раз скорость тела 1 больше скорости тела 2?','1-дененің жылдамдығы 2-дененің жылдамдығынан неше есе көп?')+g,given:L('графики s(t)','s(t) графиктері'),
+    steps:[{why:L('Скорости по графикам (за 10 с):','Графиктер бойынша жылдамдықтар (10 с ішінде):'),mx:`v<sub>1</sub> = ${v1*T} : 10 = ${v1} ${MS()}; &nbsp; v<sub>2</sub> = ${v2*T} : 10 = ${v2} ${MS()}`},{why:L('Отношение:','Қатынасы:'),mx:`${frac('v<sub>1</sub>','v<sub>2</sub>')} = ${frac(v1,v2)} = ${fmt(v1/v2,3)}`}],ans:v1/v2,unit:L('раз(а)','есе'),tol:.01};}
+function pTri(){const v=pick([4,6,8,10]),t=pick([2,4,5,6]);const M=motion([{d:t,v0:0,v1:v},{d:10-t,v0:v,v1:v}]);
+  return{text:L(`Тело разгоняется, затем движется равномерно. Найдите путь за первые ${t} с (площадь треугольника под графиком).`,`Дене үдейді, сосын бірқалыпты қозғалады. Алғашқы ${t} с ішіндегі жолды табыңыз (график астындағы үшбұрыштың ауданы).`)+vtGraph(M),given:L('график v(t)','v(t) графигі'),
+    steps:[{why:L('Под графиком — прямоугольный треугольник с катетами t и v:','График астында — катеттері t және v тікбұрышты үшбұрыш:'),mx:`s = ${frac('v · t','2')} = ${frac(v+' · '+t,2)} = ${v*t/2} ${MM()}`}],ans:v*t/2,unit:MM()};}
+const PGEN={vst:pVst,seg:pSeg,rest:pRest,path:pPath,avg:pAvg,two:pTwo,tri:pTri};
+const PR={cat:'vst',seed:1,st:{shown:0,ans:false,tries:[]}};
+function drawProb(){
+  $('#prCat').innerHTML=Object.entries(PCAT()).map(([k,l])=>`<button data-c="${k}" aria-pressed="${k===PR.cat}">${l}</button>`).join('');
+  $('#prConst').innerHTML=[`v = ${frac('s','t')}, &nbsp; v = ${frac('Δs','Δt')}`,L('s = v · t — площадь под графиком v(t)','s = v · t — v(t) графигі астындағы аудан'),`v<sub>${L('ср','орт')}</sub> = ${frac(L('весь путь','барлық жол'),L('всё время','барлық уақыт'))}`,L('горизонтальный участок s(t) — тело стоит','s(t)-ның горизонталь бөлігі — дене тұр')].map(s=>`<div class="m" style="white-space:normal">${s}</div>`).join('');
+  document.querySelectorAll('.teach').forEach(c=>c.checked=TEACH);
+  const P=withSeed(PR.seed,()=>PGEN[PR.cat]());
+  $('#prCatL').textContent=PCAT()[PR.cat];
+  $('#prText').innerHTML=P.text;
+  solveUI($('#prSolve'),PR.st,P,drawProb,true);}
+$('#prCat').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;PR.cat=b.dataset.c;newProb();});
+$('#prNew').addEventListener('click',()=>newProb());
+function newProb(){PR.seed=newSeed();PR.st={shown:0,ans:false,tries:[]};drawProb();}
 
-/* ---------- pen / ink layer ---------- */
-var ink=$('#ink'),ctx=ink.getContext('2d'),dpr=1;
-var penStore=LS.get('perp.ink')||{};
-var pen={tool:'off',color:'p1',size:1,armed:false};
-var SIZES=[2.2,4,7];
-var strokes=[],cur=null,erasing=false,armTimer=null;
-function penKey(){return state.lang+'|'+state.tab;}
-function loadStrokes(){var k=penKey();if(!Array.isArray(penStore[k]))penStore[k]=[];strokes=penStore[k];}
-function saveInk(){LS.set('perp.ink',penStore);}
-function colorOf(c){return getComputedStyle(document.documentElement).getPropertyValue('--pen-'+c.slice(1)).trim()||'#1b3fd0';}
-function sizeInk(){
- var v=$('#view'),w=v.clientWidth,h=v.clientHeight;
- if(!w||!h)return;
- dpr=Math.min(window.devicePixelRatio||1,1.5);
- ink.width=Math.round(w*dpr);ink.height=Math.round(h*dpr);
- ink.style.width=w+'px';ink.style.height=h+'px';
- drawAll();
+/* ================= БАНК ЗАДАНИЙ ================= */
+const CATN=()=>({kind:L('Вид движения по графику','График бойынша қозғалыс түрі'),match:L('Сопоставь графики','Графиктерді сәйкестендір'),read:L('Чтение графиков','Графиктерді оқу'),th:L('Теория','Теория')});
+const qkey=x=>/<svg/.test(String(x))?String(x):strip(String(x));
+function mkQ(cat,q,correct,wrongs,ex){const seen=new Set([qkey(correct)]);const w=[];for(const x of wrongs){const t=qkey(x);if(!seen.has(t)){seen.add(t);w.push(x);}if(w.length===3)break;}
+  const opts=shuffle([correct,...w]);return{cat:CATN()[cat],q,opts,ans:opts.indexOf(correct),ex};}
+const KTXT=()=>({rest:L('тело покоится','дене тыныштықта'),slow:L('равномерное движение','бірқалыпты қозғалыс'),acc:L('скорость тела увеличивается','дененің жылдамдығы артады'),dec:L('скорость тела уменьшается','дененің жылдамдығы кемиді'),stop:L('движение с остановкой','аялдамасы бар қозғалыс')});
+function gKind(){const k=pick(['rest','slow','acc','dec','stop']);const w=pick(['s','v']);const K=KTXT();const g=k==='rest'?miniRest(w):mini(motion(KINDS[k]),w);
+  return mkQ('kind',L(`Какое движение изображено на графике ${w==='s'?'пути':'скорости'}?`,`${w==='s'?'Жол':'Жылдамдық'} графигінде қандай қозғалыс бейнеленген?`)+`<div style="max-width:300px">${g}</div>`,K[k],shuffle(Object.keys(K).filter(x=>x!==k)).map(x=>K[x]),
+    w==='s'?L('s(t): горизонталь — покой; прямая — равномерное; загиб вверх — разгон; становится пологой — торможение; горизонтальный отрезок посередине — остановка.','s(t): горизонталь — тыныштық; түзу — бірқалыпты; жоғары иілу — үдеу; жайпақ бола бастаса — тежелу; ортасындағы горизонталь кесінді — аялдама.')
+    :L('v(t): на оси — покой; горизонталь — равномерное; растёт — разгон; убывает — торможение; падение до нуля на участке — остановка.','v(t): осьте — тыныштық; горизонталь — бірқалыпты; өседі — үдеу; кемиді — тежелу; бөлікте нөлге түсуі — аялдама.'));}
+function gMatch(){const ks=['rest','slow','fast','acc','dec','stop'];const k=pick(ks);const dir=pick(['sv','vs']);const g=x=>x==='rest'?miniRest(dir==='sv'?'v':'s'):mini(motion(KINDS[x]),dir==='sv'?'v':'s',null,(x==='slow'||x==='fast')&&dir==='sv'?7.5:(x==='slow'||x==='fast')?66:null);
+  const q0=k==='rest'?miniRest(dir==='sv'?'s':'v'):mini(motion(KINDS[k]),dir==='sv'?'s':'v',null,(k==='slow'||k==='fast')&&dir==='vs'?7.5:(k==='slow'||k==='fast')?66:null);
+  const others=shuffle(ks.filter(x=>x!==k&&!(k==='slow'&&x==='fast')&&!(k==='fast'&&x==='slow')));
+  return mkQ('match',(dir==='sv'?L('Какой график скорости соответствует этому графику пути?','Осы жол графигіне қай жылдамдық графигі сәйкес келеді?'):L('Какой график пути соответствует этому графику скорости?','Осы жылдамдық графигіне қай жол графигі сәйкес келеді?'))+`<div style="max-width:300px">${q0}</div>`,g(k),others.map(g),
+    L('Равномерное: s(t) — наклонная прямая, v(t) — горизонталь. Покой: s(t) — горизонталь, v(t) — на оси. Разгон: s(t) загибается вверх, v(t) растёт.','Бірқалыпты: s(t) — көлбеу түзу, v(t) — горизонталь. Тыныштық: s(t) — горизонталь, v(t) — осьте. Үдеу: s(t) жоғары иіледі, v(t) өседі.'));}
+function gRead(){const r=rnd();
+  if(r<.4){const v=pick([2,3,4,5,6]);const M=motion([{d:10,v0:v,v1:v}]);return mkQ('read',L('Чему равна скорость тела?','Дененің жылдамдығы неге тең?')+stGraph(M),`${v} ${MS()}`,[`${v*10} ${MS()}`,`${v+1} ${MS()}`,`${fmt(10/(v*10),2)} ${MS()}`,`${v*2} ${MS()}`],`v = s : t = ${v*10} : 10 = ${v} ${MS()}.`);}
+  if(r<.7){const M=pieceM(2,false);return mkQ('read',L('Какой путь прошло тело за 10 с?','Дене 10 с ішінде қандай жол жүрді?')+vtGraph(M),`${fmt(M.S)} ${MM()}`,[`${fmt(M.segs[0].v0+M.segs[1].v0)} ${MM()}`,`${fmt(M.S+5)} ${MM()}`,`${fmt(M.segs[0].ds)} ${MM()}`,`${fmt(M.S/10)} ${MM()}`],L('Путь = сумма площадей прямоугольников: ','Жол = тіктөртбұрыштар аудандарының қосындысы: ')+M.segs.map(o=>`${fmt(o.v0)}·${fmt(o.d)}`).join(' + ')+` = ${fmt(M.S)} ${MM()}.`);}
+  const M=pieceM(3,true);const o=M.segs.find(g=>g.v0===0);return mkQ('read',L('Сколько секунд тело стояло?','Дене неше секунд тұрды?')+stGraph(M),`${fmt(o.d)} ${SS()}`,[`${fmt(o.t0)} ${SS()}`,`${fmt(o.t1)} ${SS()}`,`${fmt(o.d+1)} ${SS()}`,`${fmt(Math.max(1,o.d-1))} ${SS()}`],L(`Горизонтальный участок с ${fmt(o.t0)} по ${fmt(o.t1)} с.`,`Горизонталь бөлік ${fmt(o.t0)}-ден ${fmt(o.t1)} с-қа дейін.`));}
+const THQ=()=>[
+  [L('Что откладывают по горизонтальной оси на графиках пути и скорости?','Жол және жылдамдық графиктерінде горизонталь оське не салынады?'),L('время t','уақыт t'),[L('путь s','жол s'),L('скорость v','жылдамдық v'),L('массу m','масса m')],L('Время — горизонтальная ось.','Уақыт — горизонталь ось.')],
+  [L('Может ли график пути s(t) идти вниз?','s(t) жол графигі төмен түсуі мүмкін бе?'),L('нет, путь со временем не уменьшается','жоқ, жол уақыт өте келе кемімейді'),[L('да, если тело тормозит','иә, егер дене тежелсе'),L('да, если тело стоит','иә, егер дене тұрса'),L('да, всегда в конце движения','иә, қозғалыс соңында әрқашан')],L('Пройденный путь может только расти или оставаться прежним.','Жүрілген жол тек өсуі немесе өзгермей қалуы мүмкін.')],
+  [L('Как по графику пути сравнить скорости двух тел?','Жол графигі бойынша екі дененің жылдамдығын қалай салыстырады?'),L('у кого график круче, у того скорость больше','кімнің графигі тігірек болса, соның жылдамдығы көп'),[L('у кого график длиннее','кімнің графигі ұзынырақ'),L('у кого график ниже','кімнің графигі төменірек'),L('по цвету графика','графиктің түсі бойынша')],L('Крутизна графика s(t) показывает скорость.','s(t) графигінің тіктігі жылдамдықты көрсетеді.')],
+  [L('Что численно равно площади под графиком скорости?','Жылдамдық графигі астындағы аудан сан жағынан неге тең?'),L('пройденному пути','жүрілген жолға'),[L('скорости','жылдамдыққа'),L('времени','уақытқа'),L('средней скорости','орташа жылдамдыққа')],L('Для прямоугольника s = v·t.','Тіктөртбұрыш үшін s = v·t.')],
+  [L('Как выглядит график скорости равномерного движения?','Бірқалыпты қозғалыстың жылдамдық графигі қандай?'),L('горизонтальная прямая','горизонталь түзу'),[L('наклонная прямая из начала координат','координаттар басынан шығатын көлбеу түзу'),L('вертикальная прямая','вертикаль түзу'),L('кривая линия','қисық сызық')],L('Скорость не меняется — график параллелен оси t.','Жылдамдық өзгермейді — график t осіне параллель.')],
+  [L('Как выглядит график пути равномерного движения?','Бірқалыпты қозғалыстың жол графигі қандай?'),L('наклонная прямая','көлбеу түзу'),[L('горизонтальная прямая','горизонталь түзу'),L('парабола','парабола'),L('вертикальная прямая','вертикаль түзу')],L('s = vt — прямая пропорциональность.','s = vt — тура пропорционалдық.')],
+  [L('На графике пути есть горизонтальный участок. Что это значит?','Жол графигінде горизонталь бөлік бар. Бұл нені білдіреді?'),L('в это время тело стояло','бұл уақытта дене тұрды'),[L('тело двигалось с наибольшей скоростью','дене ең үлкен жылдамдықпен қозғалды'),L('тело двигалось назад','дене кері қозғалды'),L('тело разгонялось','дене үдеді')],L('Путь не меняется — тело в покое.','Жол өзгермейді — дене тыныштықта.')],
+  [L('Зачем при построении графика выбирают масштаб?','График салғанда масштаб не үшін таңдалады?'),L('чтобы все данные поместились и график был наглядным','барлық деректер сыйып, график көрнекі болуы үшін'),[L('чтобы изменить скорость тела','дененің жылдамдығын өзгерту үшін'),L('чтобы график был прямым','график түзу болуы үшін'),L('масштаб не нужен','масштаб керек емес')],L('Масштаб — сколько единиц величины приходится на одно деление.','Масштаб — бір бөлікке шаманың қанша бірлігі келеді.')],
+];
+function gTh(){const[q,a,w,ex]=pick(THQ());return mkQ('th',q,a,w,ex);}
+const GEN={kind:gKind,match:gMatch,read:gRead,th:gTh};
+const build=rec=>withSeed(rec.seed,()=>GEN[rec.cat==='all'?pick(Object.keys(GEN)):rec.cat]());
+const LET='АБВГ';
+function renderQ(box,q,chosen,{onAnswer,nextLabel,onNext}){
+  box.innerHTML=`<div class="qcard"><div class="qcat">${q.cat}</div><div class="qtext">${q.q}</div><div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-o="${i}"><span class="k">${LET[i]}</span><span>${o}</span></button>`).join('')}</div><div class="fb"></div></div>`;
+  const btns=[...box.querySelectorAll('.opt')];
+  const showFb=(i,focus)=>{const ok=i===q.ans;btns.forEach(x=>{x.disabled=true;});btns[q.ans].classList.add('right');if(!ok)btns[i].classList.add('wrong');
+    const fb=box.querySelector('.fb');fb.innerHTML=`<div class="expl ${ok?'ok':'no'}"><b>${ok?L('Верно!','Дұрыс!'):L('Неверно. Правильный ответ: ','Қате. Дұрыс жауап: ')+LET[q.ans]}</b>${q.ex}</div>`;
+    const nb=document.createElement('button');nb.className='btn';nb.textContent=nextLabel();nb.style.marginTop='14px';nb.addEventListener('click',onNext);fb.appendChild(nb);if(focus)nb.focus({preventScroll:true});};
+  if(chosen!=null)showFb(chosen,false);
+  btns.forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.o;showFb(i,true);onAnswer(i===q.ans,i);}));
 }
-function setLine(s){
- var col=colorOf(s.c);
- ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=s.w;ctx.lineCap='round';ctx.lineJoin='round';
-}
-function drawStroke(s){
- var w=ink.clientWidth,p=s.p.map(function(a){return [a[0]*w,a[1]]});
- setLine(s);
- if(p.length===1){ctx.beginPath();ctx.arc(p[0][0],p[0][1],s.w/2,0,6.2832);ctx.fill();return;}
- ctx.beginPath();ctx.moveTo(p[0][0],p[0][1]);
- for(var i=1;i<p.length-1;i++){ctx.quadraticCurveTo(p[i][0],p[i][1],(p[i][0]+p[i+1][0])/2,(p[i][1]+p[i+1][1])/2);}
- var l=p[p.length-1];ctx.lineTo(l[0],l[1]);ctx.stroke();
-}
-function drawAll(){
- ctx.setTransform(dpr,0,0,dpr,0,0);
- ctx.clearRect(0,0,ink.clientWidth,ink.clientHeight);
- strokes.forEach(drawStroke);
-}
-function pos(e){var r=ink.getBoundingClientRect();return [(e.clientX-r.left)/r.width,e.clientY-r.top];}
-function eraseAt(e){
- var r=ink.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,R=15,n=strokes.length;
- for(var i=strokes.length-1;i>=0;i--){
-  if(strokes[i].p.some(function(a){var dx=a[0]*r.width-x,dy=a[1]-y;return dx*dx+dy*dy<R*R;}))strokes.splice(i,1);
- }
- if(strokes.length!==n)drawAll();
-}
-ink.addEventListener('pointerdown',function(e){
- if(pen.tool==='off')return;
- e.preventDefault();
- try{ink.setPointerCapture(e.pointerId);}catch(x){}
- if(pen.tool==='pen'){
-  cur={c:pen.color,w:SIZES[pen.size],p:[pos(e)]};strokes.push(cur);
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-  var q=cur.p[0];setLine(cur);ctx.beginPath();ctx.arc(q[0]*ink.clientWidth,q[1],cur.w/2,0,6.2832);ctx.fill();
- }else{erasing=true;eraseAt(e);}
-});
-ink.addEventListener('pointermove',function(e){
- if(cur){
-  var p=pos(e),l=cur.p[cur.p.length-1],w=ink.clientWidth,dx=(p[0]-l[0])*w,dy=p[1]-l[1];
-  if(dx*dx+dy*dy<2.25)return;
-  cur.p.push(p);
-  ctx.setTransform(dpr,0,0,dpr,0,0);setLine(cur);
-  ctx.beginPath();ctx.moveTo(l[0]*w,l[1]);ctx.lineTo(p[0]*w,p[1]);ctx.stroke();
- }else if(erasing){eraseAt(e);}
-});
-function endInk(){
- if(cur){cur=null;drawAll();saveInk();}
- if(erasing){erasing=false;saveInk();}
-}
-ink.addEventListener('pointerup',endInk);
-ink.addEventListener('pointercancel',endInk);
+const T={cat:'all',done:0,ok:0,streak:0,best:0,rec:null,chosen:null};
+try{T.best=+localStorage.getItem('gr7-best')||0;}catch(e){}
+function renderTrCat(){const C_=[['all',L('Все темы','Барлық тақырыптар')],...Object.entries(CATN())];$('#trCat').innerHTML=C_.map(([k,l])=>`<button data-c="${k}" aria-pressed="${k===T.cat}">${l}</button>`).join('');}
+$('#trCat').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;T.cat=b.dataset.c;[...$('#trCat').children].forEach(x=>x.setAttribute('aria-pressed',x===b));nextTrain();});
+function stats(){$('#sDone').textContent=T.done;$('#sOk').textContent=T.ok;$('#sStreak').textContent=T.streak;$('#sBest').textContent=T.best;}
+function drawTrain(){renderQ($('#trBox'),build(T.rec),T.chosen,{nextLabel:()=>L('Следующее задание','Келесі тапсырма'),onNext:nextTrain,onAnswer:(ok,i)=>{T.chosen=i;T.done++;if(ok){T.ok++;T.streak++;if(T.streak>T.best){T.best=T.streak;try{localStorage.setItem('gr7-best',T.best);}catch(e){}}}else T.streak=0;stats();}});}
+function nextTrain(){T.rec={cat:T.cat,seed:newSeed()};T.chosen=null;drawTrain();}
+const TT={phase:'intro',recs:[],i:0,ok:0,chosen:[]};
+function drawTest(){if(TT.phase==='intro')testIntro();else if(TT.phase==='q')testStep();else testEnd();}
+function testIntro(){let best=null;try{best=localStorage.getItem('gr7-test');}catch(e){}
+  $('#testBox').innerHTML=`<div class="qcard"><h2>${L('Итоговый тест','Қорытынды тест')}</h2><p>${L('10 заданий: определите вид движения по графику, сопоставьте графики пути и скорости, прочитайте графики, ответьте на вопросы по теории. После каждого ответа — разбор, в конце — итог и список ошибок.','10 тапсырма: график бойынша қозғалыс түрін анықтаңыз, жол мен жылдамдық графиктерін сәйкестендіріңіз, графиктерді оқыңыз, теория сұрақтарына жауап беріңіз. Әр жауаптан кейін талдау, соңында қорытынды және қателер тізімі.')}</p>
+    ${best!==null?`<p class="stat">${L('Ваш лучший результат','Ең жақсы нәтижеңіз')}: <b>${best} / 10</b></p>`:''}<button class="btn" id="tStart">${L('Начать тест','Тестті бастау')}</button></div>`;
+  $('#tStart').addEventListener('click',startTest);}
+function startTest(){TT.recs=shuffle(['kind','kind','kind','match','match','match','read','read','th','th']).map(c=>({cat:c,seed:newSeed()}));TT.i=0;TT.ok=0;TT.chosen=[];TT.phase='q';testStep();}
+function testStep(){const q=build(TT.recs[TT.i]),box=$('#testBox'),ch=TT.chosen[TT.i];
+  box.innerHTML=`<div class="row" style="margin-bottom:10px"><span class="stat">${L('Задание','Тапсырма')} <b>${TT.i+1}</b> / 10</span><span class="stat">${L('Верно','Дұрыс')}: <b id="tOk">${TT.ok}</b></span></div><div class="progress" style="margin-bottom:16px"><i style="width:${(TT.i+(ch!=null?1:0))*10}%"></i></div><div id="tQ"></div>`;
+  renderQ($('#tQ'),q,ch,{nextLabel:()=>TT.i<9?L('Дальше','Әрі қарай'):L('Показать результат','Нәтижені көрсету'),onNext:()=>{TT.i++;if(TT.i<10)testStep();else{TT.phase='end';testEnd();}},
+    onAnswer:(ok,i)=>{TT.chosen[TT.i]=i;if(ok)TT.ok++;box.querySelector('.progress i').style.width=(TT.i+1)*10+'%';$('#tOk').textContent=TT.ok;}});}
+function testEnd(){const s=TT.ok;const msg=s>=9?L('Отлично! Тема усвоена.','Өте жақсы! Тақырып меңгерілді.'):s>=7?L('Хорошо. Повторите задания, где были ошибки.','Жақсы. Қате жіберген тапсырмаларды қайталаңыз.'):s>=5?L('Неплохо, но стоит потренироваться ещё.','Жаман емес, бірақ тағы жаттығу керек.'):L('Вернитесь к теории и модели, затем потренируйтесь ещё.','Теория мен модельге қайта оралып, сосын тағы жаттығыңыз.');
+  try{const prev=localStorage.getItem('gr7-test');if(prev===null||s>+prev)localStorage.setItem('gr7-test',s);}catch(e){}
+  const wrong=TT.recs.map((r,i)=>({q:build(r),c:TT.chosen[i]})).filter(x=>x.c!==x.q.ans);
+  $('#testBox').innerHTML=`<div class="qcard"><div class="qcat">${L('Результат','Нәтиже')}</div><div class="score">${s} <span style="font-size:1.4rem;color:var(--muted)">/ 10</span></div><p>${msg}</p>
+    ${wrong.length?`<h3>${L('Разбор ошибок','Қателерді талдау')}</h3><div class="review">${wrong.map(({q})=>`<div><span class="qcat">${q.cat}</span><span>${q.q}</span><span>${L('Ответ','Жауабы')}: ${q.opts[q.ans]}</span><span style="color:var(--muted)">${q.ex}</span></div>`).join('')}</div>`:''}
+    <div class="row"><button class="btn" id="tAgain">${L('Пройти ещё раз','Қайта тапсыру')}</button><button class="btn ghost" id="tTrain">${L('Перейти в тренажёр','Жаттықтырғышқа өту')}</button></div></div>`;
+  $('#tAgain').addEventListener('click',startTest);$('#tTrain').addEventListener('click',()=>showTab('train'));}
 
-function toast(msg){
- var el=$('#toast');el.textContent=msg;el.hidden=false;
- clearTimeout(toast.t);toast.t=setTimeout(function(){el.hidden=true;},3200);
-}
-function renderPen(){
- var t=T[state.lang];
- var colors=['p1','p2','p3'].map(function(c,i){
-  return '<button type="button" class="tool sw" data-color="'+c+'" aria-pressed="'+(pen.tool==='pen'&&pen.color===c)+'" aria-label="'+t['c'+(i+1)]+'" title="'+t['c'+(i+1)]+'"><i class="dot" style="background:var(--pen-'+(i+1)+')"></i></button>';
- }).join('');
- var sz=Math.round(SIZES[pen.size]*1.6+4);
- $('#penWrap').innerHTML='<div class="pen-bar" role="toolbar" aria-label="'+t.penGroup+'">'+
-  '<button type="button" class="tool" data-tool="pen" aria-pressed="'+(pen.tool==='pen')+'" aria-label="'+t.pen+'" title="'+t.pen+'">'+svgI('pen')+'</button>'+
-  '<button type="button" class="tool" data-tool="eraser" aria-pressed="'+(pen.tool==='eraser')+'" aria-label="'+t.eraser+'" title="'+t.eraser+'">'+svgI('eraser')+'</button>'+
-  '<span class="sep"></span>'+colors+
-  '<button type="button" class="tool" data-act="size" aria-label="'+t.size+'" title="'+t.size+'"><i class="dot" style="width:'+sz+'px;height:'+sz+'px"></i></button>'+
-  '<span class="sep"></span>'+
-  '<button type="button" class="tool" data-act="undo" aria-label="'+t.undo+'" title="'+t.undo+'">'+svgI('undo')+'</button>'+
-  '<button type="button" class="tool'+(pen.armed?' armed':'')+'" data-act="clear" aria-label="'+(pen.armed?t.clearArmed:t.clear)+'" title="'+(pen.armed?t.clearArmed:t.clear)+'">'+svgI('trash')+'</button>'+
-  '</div>';
- document.body.setAttribute('data-tool',pen.tool);
-}
 
-/* ---------- events ---------- */
-function setTool(name){
- var t=T[state.lang];
- pen.tool=(pen.tool===name)?'off':name;
- renderPen();
- if(pen.tool==='pen')toast(t.penOn);else if(pen.tool==='eraser')toast(t.eraserOn);
-}
-function copySym(s){
- var t=T[state.lang];
- function ok(){toast(t.copied+': '+s);}
- function fail(){toast(t.copyFail);}
- try{
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(s).then(ok,fail);}else fail();
- }catch(e){fail();}
-}
-document.addEventListener('click',function(e){
- var el=e.target.closest('button');if(!el)return;
- var t=T[state.lang];
- if(el.dataset.lang){
-  state.lang=el.dataset.lang;savePrefs();fullRender();return;
- }
- if(el.dataset.size!==undefined&&el.closest('#sizeSeg')){state.size=+el.dataset.size;savePrefs();applySize();requestAnimationFrame(function(){sizeInk();drawAll();});return;}
- if(el.dataset.tool){setTool(el.dataset.tool);return;}
- if(el.dataset.color){pen.color=el.dataset.color;pen.tool='pen';renderPen();return;}
- var act=el.dataset.act;if(!act)return;
- if(act==='theme'){state.theme=state.theme==='dark'?'light':'dark';savePrefs();renderTheme();requestAnimationFrame(drawAll);}
- else if(act==='tab'){state.tab=el.dataset.tab;savePrefs();fullRender();window.scrollTo(0,0);}
- else if(act==='mode'){
-  var v=view(el.dataset.id),nm=el.dataset.mode;
-  if(nm==='net'){v.yaw=0;v.pitch=Math.PI/2;}
-  else if(v.mode==='net'){v.yaw=-.55;v.pitch=.5;}
-  v.mode=nm;
-  $$('[data-act="mode"][data-id="'+el.dataset.id+'"]').forEach(function(b){b.setAttribute('aria-pressed',String(b===el));});
-  drawFig(el.dataset.id);
- }
- else if(act==='reset'){var v2=view(el.dataset.id);var it0=ITEMS[el.dataset.id];v2.yaw=it0.v0?it0.v0.yaw:-.55;v2.pitch=it0.v0?it0.v0.pitch:.5;drawFig(el.dataset.id);}
- else if(act==='rgroup'){
-  state.ref.g=el.dataset.g;
-  $$('[data-act="rgroup"]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.g===state.ref.g));});
-  $('#refGrid').innerHTML=refGridHTML();requestAnimationFrame(sizeInk);
- }
- else if(act==='copy'){copySym(el.dataset.sym);}
- else if(act==='qpick'){
-  var q=state.quiz;if(q.sel!==null)return;
-  q.sel=+el.dataset.i;if(q.sel===QUIZ[q.i].a)q.score++;renderView();sizeInk();
- }
- else if(act==='qnext'){
-  var qq=state.quiz;
-  if(qq.i===QUIZ.length-1)qq.done=true;else{qq.i++;qq.sel=null;}
-  renderView();sizeInk();
- }
- else if(act==='qrestart'){state.quiz={i:0,sel:null,score:0,done:false};renderView();sizeInk();}
- else if(act==='size'){pen.size=(pen.size+1)%SIZES.length;renderPen();}
- else if(act==='undo'){strokes.pop();drawAll();saveInk();}
- else if(act==='clear'){
-  if(pen.armed){strokes.length=0;drawAll();saveInk();pen.armed=false;clearTimeout(armTimer);renderPen();toast(t.cleared);}
-  else{pen.armed=true;renderPen();toast(t.clearArmed);clearTimeout(armTimer);armTimer=setTimeout(function(){pen.armed=false;renderPen();},3000);}
- }
-});
-document.addEventListener('input',function(e){
- var el=e.target;
- if(el.id==='refq'){state.ref.q=el.value;$('#refGrid').innerHTML=refGridHTML();requestAnimationFrame(sizeInk);}
- else if(el.type==='range'&&el.dataset.id){
-  var v=view(el.dataset.id);v.n=+el.value;
-  var nv=$('#nv-'+el.dataset.id);if(nv){var sl=ITEMS[el.dataset.id].slider;nv.textContent=sl&&sl.fmt?sl.fmt(v.n):v.n;}
-  drawFig(el.dataset.id);
- }
-});
 
-/* drag to rotate figures */
-var drag=null;
-document.addEventListener('pointerdown',function(e){
- var s=e.target.closest&&e.target.closest('svg[data-fig]');if(!s)return;
- drag={id:s.dataset.fig,x:e.clientX,y:e.clientY,pid:e.pointerId,svg:s};
- try{s.setPointerCapture(e.pointerId);}catch(x){}
- s.classList.add('grab');
-});
-document.addEventListener('pointermove',function(e){
- if(!drag||e.pointerId!==drag.pid)return;
- var v=view(drag.id),dx=e.clientX-drag.x,dy=e.clientY-drag.y;
- drag.x=e.clientX;drag.y=e.clientY;
- v.yaw+=dx*.011;
- if(e.pointerType==='mouse')v.pitch=Math.max(-.25,Math.min(Math.PI/2,v.pitch+dy*.01));
- drawFig(drag.id);
-});
-function endDrag(e){if(drag&&e.pointerId===drag.pid){drag.svg.classList.remove('grab');drag=null;}}
-document.addEventListener('pointerup',endDrag);
-document.addEventListener('pointercancel',endDrag);
-document.addEventListener('keydown',function(e){
- var s=e.target.closest&&e.target.closest('svg[data-fig]');if(!s)return;
- var v=view(s.dataset.fig),k=e.key,h=true;
- if(k==='ArrowLeft')v.yaw-=.12;else if(k==='ArrowRight')v.yaw+=.12;
- else if(k==='ArrowUp')v.pitch=Math.min(Math.PI/2,v.pitch+.08);else if(k==='ArrowDown')v.pitch=Math.max(-.25,v.pitch-.08);
- else h=false;
- if(h){e.preventDefault();drawFig(s.dataset.fig);}
-});
-
-/* ---------- boot ---------- */
-function fullRender(){
- var L=state.lang,t=T[L];
- document.documentElement.lang=L==='kk'?'kk':'ru';
- $('#bt').textContent=t.title;$('#bs').textContent=t.sub;
- $$('.seg button[data-lang]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.lang===L));});
- applySize();
- renderTabs();renderTheme();loadStrokes();renderView();renderPen();
- requestAnimationFrame(sizeInk);
-}
-fullRender();
-if(window.ResizeObserver)new ResizeObserver(function(){sizeInk();}).observe($('#view'));
-window.addEventListener('resize',sizeInk);
-})();
+/* ================= переключатели ================= */
+function renderAll(){applyUI();renderTheory();drawBuild(true);drawDraw();drawProb();renderTrCat();stats();drawTrain();drawTest();}
+$('#langSw').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.dataset.lang===LANG)return;LANG=b.dataset.lang;try{localStorage.setItem('gr7-lang',LANG);}catch(e){}renderAll();});
+function setSize(px){document.documentElement.style.fontSize=px+'px';[...$('#sizeSw').children].forEach(b=>b.setAttribute('aria-pressed',+b.dataset.sz===px));}
+$('#sizeSw').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const px=+b.dataset.sz;setSize(px);try{localStorage.setItem('gr7-size',px);}catch(e){}});
+(function(){let px=22;try{const v=+localStorage.getItem('gr7-size');if([16,22,28].includes(v))px=v;}catch(e){}setSize(px);})();
+const mq=matchMedia('(prefers-color-scheme: dark)');
+function syncTheme(){const t=document.documentElement.dataset.theme||(mq.matches?'dark':'light');[...$('#themeSw').children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.th===t));}
+$('#themeSw').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.documentElement.dataset.theme=b.dataset.th;try{localStorage.setItem('gr7-theme',b.dataset.th);}catch(e){}syncTheme();});
+try{const t=localStorage.getItem('gr7-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;}catch(e){}
+mq.addEventListener('change',syncTheme);new MutationObserver(syncTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+CB.segs=CPRE().school.segs.map(g=>({...g}));PR.seed=newSeed();DR.seed=newSeed();T.rec={cat:'all',seed:newSeed()};
+renderAll();syncTheme();
+(function(){const h=location.hash.slice(1);let t=TABS.includes(h)?h:null;if(!t){try{const s=localStorage.getItem('gr7-tab');if(TABS.includes(s))t=s;}catch(e){}}showTab(t||'theory');})();
 </script>
 
-</body></html>
+<style>
+#penCv{position:fixed;inset:0;width:100vw;height:100vh;z-index:900;pointer-events:none;touch-action:auto}
+#penCv.on{pointer-events:auto;touch-action:none;cursor:crosshair}
+#penCv.on.er{cursor:cell}
+#penBar{position:fixed;right:18px;bottom:18px;z-index:901;display:flex;align-items:center;gap:6px;padding:8px;border-radius:40px;background:var(--surface);border:1px solid var(--line);box-shadow:0 6px 24px rgba(10,20,50,.18);font-family:'PT Sans',Arial,sans-serif}
+#penBar button{all:unset;box-sizing:border-box;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:var(--ink);transition:background .15s}
+#penBar button:hover{background:var(--accent-soft)}
+#penBar button[aria-pressed="true"]{background:var(--accent-soft);box-shadow:inset 0 0 0 3px var(--accent)}
+#penBar button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+#penBar svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#penBar .sw{width:30px;height:30px;border-radius:50%;border:2px solid rgba(0,0,0,.15)}
+#penBar .wd{background:var(--ink);border-radius:50%}
+#penBar .sep{width:1px;height:36px;background:var(--line);margin:0 4px}
+#penBar .tools{display:none;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+#penBar.open .tools{display:flex}
+#penMain{background:var(--accent)!important;color:#fff!important;width:62px!important;height:62px!important}
+#penBar.open #penMain{background:var(--c2,#c2410c)!important}
+@media (max-width:900px){#penBar{max-width:calc(100vw - 36px);border-radius:24px}#penBar button{width:46px;height:46px}}
+</style>
+<canvas id="penCv"></canvas>
+<div id="penBar">
+  <div class="tools">
+    <button data-pc="ink" class="pc"><span class="sw"></span></button>
+    <button data-pc="red" class="pc"><span class="sw"></span></button>
+    <button data-pc="blue" class="pc"><span class="sw"></span></button>
+    <button data-pc="green" class="pc"><span class="sw"></span></button>
+    <button data-pc="orange" class="pc"><span class="sw"></span></button>
+    <button data-pc="violet" class="pc"><span class="sw"></span></button>
+    <span class="sep"></span>
+    <button data-pw="3" class="pw"><span class="wd" style="width:6px;height:6px"></span></button>
+    <button data-pw="6" class="pw"><span class="wd" style="width:11px;height:11px"></span></button>
+    <button data-pw="12" class="pw"><span class="wd" style="width:18px;height:18px"></span></button>
+    <span class="sep"></span>
+    <button id="penEr"><svg viewBox="0 0 24 24"><path d="M7 21h12"/><path d="M5.5 15.5 14 7l5 5-8.5 8.5H7.5z"/><path d="M9.5 11.5l5 5"/></svg></button>
+    <button id="penUndo"><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
+    <button id="penClr"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13"/><path d="M9 7V4h6v3"/></svg></button>
+    <span class="sep"></span>
+  </div>
+  <button id="penMain" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M15 4l5 5L9 20H4v-5z"/><path d="M13 6l5 5"/></svg></button>
+</div>
+<script>
+(function(){
+  const cv=document.getElementById('penCv'),bar=document.getElementById('penBar'),ctx=cv.getContext('2d');
+  const LNG=()=>(typeof LANG!=='undefined'&&LANG==='kz')?1:0;
+  const TIP={penMain:['Ручка: рисовать на экране (Esc — выключить)','Қалам: экранға жазу (Esc — өшіру)'],penEr:['Ластик','Өшіргіш'],penUndo:['Отменить последнее','Соңғысын болдырмау'],penClr:['Стереть всё на этой вкладке','Осы беттегінің бәрін өшіру'],
+    ink:['Чёрный','Қара'],red:['Красный','Қызыл'],blue:['Синий','Көк'],green:['Зелёный','Жасыл'],orange:['Оранжевый','Қызғылт сары'],violet:['Фиолетовый','Күлгін'],w3:['Тонкая линия','Жіңішке сызық'],w6:['Средняя линия','Орташа сызық'],w12:['Толстая линия','Жуан сызық']};
+  const COL={ink:['#1c2746','#f1f4fb'],red:['#dc2626','#ff6b6b'],blue:['#2563eb','#7aa2ff'],green:['#15803d','#4ade80'],orange:['#ea580c','#fb923c'],violet:['#7c3aed','#c4a5ff']};
+  const mqD=matchMedia('(prefers-color-scheme: dark)');
+  const dark=()=>{const t=document.documentElement.dataset.theme;return t?t==='dark':mqD.matches;};
+  const st={on:false,color:'red',w:6,er:false,pages:{},cleared:{},cur:null};
+  const key=()=>{const t=document.querySelector('[role="tab"][aria-selected="true"]');return t?(t.id||t.dataset.tab||t.textContent):'main';};
+  const list=()=>st.pages[key()]||(st.pages[key()]=[]);
+  let dpr=1;
+  function size(){dpr=Math.min(window.devicePixelRatio||1,2);cv.width=Math.round(innerWidth*dpr);cv.height=Math.round(innerHeight*dpr);redraw();}
+  function stroke(s){if(s.p.length===0)return;ctx.save();ctx.globalCompositeOperation=s.er?'destination-out':'source-over';
+    ctx.strokeStyle=s.er?'#000':COL[s.c][dark()?1:0];ctx.fillStyle=ctx.strokeStyle;ctx.lineWidth=s.w;ctx.lineCap='round';ctx.lineJoin='round';
+    const ox=scrollX,oy=scrollY,p=s.p;
+    if(p.length===1){ctx.beginPath();ctx.arc(p[0][0]-ox,p[0][1]-oy,s.w/2,0,7);ctx.fill();}
+    else{ctx.beginPath();ctx.moveTo(p[0][0]-ox,p[0][1]-oy);for(let i=1;i<p.length-1;i++){const mx=(p[i][0]+p[i+1][0])/2,my=(p[i][1]+p[i+1][1])/2;ctx.quadraticCurveTo(p[i][0]-ox,p[i][1]-oy,mx-ox,my-oy);}
+      const l=p[p.length-1];ctx.lineTo(l[0]-ox,l[1]-oy);ctx.stroke();}
+    ctx.restore();}
+  function redraw(){ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,innerWidth,innerHeight);list().forEach(stroke);if(st.cur)stroke(st.cur);}
+  function tips(){const l=LNG();bar.querySelectorAll('button').forEach(b=>{const k=b.id||(b.dataset.pc)||('w'+b.dataset.pw);const t=TIP[k];if(t){b.title=t[l];b.setAttribute('aria-label',t[l]);}});}
+  function ui(){bar.classList.toggle('open',st.on);cv.classList.toggle('on',st.on);cv.classList.toggle('er',st.er);
+    document.getElementById('penMain').setAttribute('aria-pressed',st.on);
+    bar.querySelectorAll('.pc').forEach(b=>{b.setAttribute('aria-pressed',!st.er&&b.dataset.pc===st.color);b.firstElementChild.style.background=COL[b.dataset.pc][dark()?1:0];});
+    bar.querySelectorAll('.pw').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.pw===st.w));
+    document.getElementById('penEr').setAttribute('aria-pressed',st.er);tips();}
+  bar.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.id==='penMain'){st.on=!st.on;}
+    else if(b.dataset.pc){st.color=b.dataset.pc;st.er=false;}
+    else if(b.dataset.pw){st.w=+b.dataset.pw;}
+    else if(b.id==='penEr'){st.er=!st.er;}
+    else if(b.id==='penUndo'){const L_=list();if(L_.length)L_.pop();else if(st.cleared[key()]){st.pages[key()]=st.cleared[key()];delete st.cleared[key()];}redraw();}
+    else if(b.id==='penClr'){if(list().length){st.cleared[key()]=list();st.pages[key()]=[];}redraw();}
+    ui();});
+  function pt(e){return[e.clientX+scrollX,e.clientY+scrollY];}
+  cv.addEventListener('pointerdown',e=>{if(!st.on)return;e.preventDefault();try{cv.setPointerCapture(e.pointerId);}catch(_){}
+    const er=st.er||e.button===5||(e.buttons&32);
+    st.cur={c:st.color,w:er?Math.max(30,st.w*4):st.w,er,p:[pt(e)]};delete st.cleared[key()];redraw();});
+  cv.addEventListener('pointermove',e=>{if(!st.cur)return;const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];(evs.length?evs:[e]).forEach(ev=>st.cur.p.push(pt(ev)));redraw();});
+  const end=()=>{if(!st.cur)return;list().push(st.cur);st.cur=null;redraw();};
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);cv.addEventListener('lostpointercapture',end);
+  addEventListener('scroll',redraw,{passive:true});addEventListener('resize',size);
+  addEventListener('keydown',e=>{if(e.key==='Escape'&&st.on){st.on=false;ui();}});
+  new MutationObserver(()=>{redraw();ui();}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme','lang']});
+  mqD.addEventListener('change',()=>{redraw();ui();});
+  document.querySelectorAll('[role="tab"]').forEach(t=>new MutationObserver(redraw).observe(t,{attributes:true,attributeFilter:['aria-selected']}));
+  document.addEventListener('click',e=>{if(e.target.closest('#langSw,[data-lang]'))setTimeout(tips,0);});
+  size();ui();
+})();
+</script>
